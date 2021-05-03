@@ -1,0 +1,50 @@
+﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+    <div class="container">
+        <a class="navbar-brand" href="">OPEN<span style="color: aqua">SKY</span></a>
+        <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
+                        HOME
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link text-light" href="about">
+                        ABOUT
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link text-light" href="news">
+                        NEWS
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link text-light" href="https://forum.opensky.to" target="_blank">
+                        FORUMS
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link text-light" href="login">
+                        LOGIN
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+@code {
+    bool collapseNavMenu = true;
+
+    string baseMenuClass = "navbar-collapse d-sm-inline-flex flex-sm-row-reverse";
+
+    string NavMenuCssClass => baseMenuClass + (collapseNavMenu ? " collapse" : "");
+
+    void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
