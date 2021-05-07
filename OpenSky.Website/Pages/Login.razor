@@ -1,0 +1,71 @@
+﻿@page "/login"
+@inject OpenSkyService openSky
+@inject NavigationManager navigationManager
+@inject AlertService alertService
+@inject UserSessionService userSession
+
+<h1>Login</h1>
+
+<div class="card">
+    <h4 class="card-header">Login</h4>
+    <div class="card-body">
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>Username</label>
+                <InputText @bind-Value="model.Username" class="form-control" />
+                <ValidationMessage For="@(() => model.Username)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="model.Password" type="password" class="form-control" />
+                <ValidationMessage For="@(() => model.Password)" />
+            </div>
+            <button disabled="@loading" class="btn btn-primary">
+                @if (loading)
+                {
+                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                }
+                Login
+            </button>
+            <NavLink href="register" class="btn btn-link">Register</NavLink>
+        </EditForm>
+    </div>
+</div>
+
+@code
+{
+    private readonly OpenSkyApi.Login model = new OpenSkyApi.Login();
+    private bool loading;
+
+    private async void OnValidSubmit()
+    {
+        alertService.Clear();
+        loading = true;
+        try
+        {
+            var response = await openSky.LoginAsync(model);
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                model.Password = string.Empty;
+                loading = false;
+                StateHasChanged();
+            }
+            else
+            {
+                await userSession.LoggedIn(response.Data.Token);
+                alertService.Success("Logged in successfully!", true);
+                var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
+                navigationManager.NavigateTo(returnUrl);
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message);
+            model.Password = string.Empty;
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

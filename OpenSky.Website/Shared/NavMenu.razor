@@ -1,4 +1,6 @@
-﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+﻿@inject UserSessionService userSession
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
     <div class="container">
         <a class="navbar-brand" href="">OPEN<span style="color: aqua">SKY</span></a>
         <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
@@ -26,11 +28,22 @@
                         FORUMS
                     </NavLink>
                 </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link text-light" href="login">
-                        LOGIN
-                    </NavLink>
-                </li>
+                @if (!userSession.IsUserLoggedIn)
+                {
+                    <li class="nav-item">
+                        <NavLink class="nav-link text-light" href="login">
+                            LOGIN
+                        </NavLink>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <NavLink class="nav-link text-light" href="logout">
+                            LOGOUT
+                        </NavLink>
+                    </li>
+                }
             </ul>
         </div>
     </div>
@@ -38,13 +51,21 @@
 
 @code {
     bool collapseNavMenu = true;
-
     string baseMenuClass = "navbar-collapse d-sm-inline-flex flex-sm-row-reverse";
-
     string NavMenuCssClass => baseMenuClass + (collapseNavMenu ? " collapse" : "");
 
     void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        userSession.NotifyUserChanged += this.OnUserChanged;
+    }
+
+    private async Task OnUserChanged(string arg)
+    {
+        await InvokeAsync(StateHasChanged);
     }
 }

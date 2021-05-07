@@ -1,6 +1,11 @@
 ﻿@page "/"
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+@inject UserSessionService userSession
 
 <h1>OpenSky</h1>
 <p>A brand new airline manager experience!</p>
 <p>Coming Soon!</p>
+<p>@configuration["OpenSkyAPI:Url"]</p>
+<p>Hi, @userSession.OpenSkyApiToken</p>
 <RadzenButton Text="READ MORE"></RadzenButton>
