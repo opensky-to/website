@@ -3,8 +3,7 @@
 @inject NavigationManager navigationManager
 @inject AlertService alertService
 @inject UserSessionService userSession
-
-<h1>Login</h1>
+@inject IJSRuntime jsRuntime
 
 <div class="card">
     <h4 class="card-header">Login</h4>
@@ -28,7 +27,8 @@
                 }
                 Login
             </button>
-            <NavLink href="register" class="btn btn-link">Register</NavLink>
+            <NavLink href="register" class="btn btn-secondary">Register</NavLink>
+            <NavLink href="forgotpassword" class="btn btn-secondary">Forgot Password</NavLink>
         </EditForm>
     </div>
 </div>
@@ -37,6 +37,11 @@
 {
     private readonly OpenSkyApi.Login model = new OpenSkyApi.Login();
     private bool loading;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    await jsRuntime.InvokeVoidAsync("hideCaptchaBadge");
+    //}
 
     private async void OnValidSubmit()
     {
@@ -54,7 +59,7 @@
             }
             else
             {
-                await userSession.LoggedIn(response.Data.Token);
+                await userSession.LoggedIn(response.Data.Token, response.Data.Expiration.DateTime, model.Username);
                 alertService.Success("Logged in successfully!", true);
                 var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
                 navigationManager.NavigateTo(returnUrl);
@@ -62,7 +67,7 @@
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message);
+            alertService.Error(ex.Message, false, false);
             model.Password = string.Empty;
             loading = false;
             StateHasChanged();

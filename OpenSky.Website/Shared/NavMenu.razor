@@ -64,7 +64,7 @@
         userSession.NotifyUserChanged += this.OnUserChanged;
     }
 
-    private async Task OnUserChanged(string arg)
+    private async Task OnUserChanged(bool userLoggedIn)
     {
         await InvokeAsync(StateHasChanged);
     }
