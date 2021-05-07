@@ -10,6 +10,8 @@
         "tags": [
           "Airport"
         ],
+        "summary": "Gets all available airports (ICAO code only).",
+        "description": "sushi.at, 02/05/2021.",
         "responses": {
           "200": {
             "description": "Success",
@@ -18,7 +20,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Airport"
+                    "type": "string"
                   }
                 }
               },
@@ -26,7 +28,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Airport"
+                    "type": "string"
                   }
                 }
               },
@@ -34,8 +36,249 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Airport"
+                    "type": "string"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Airport/{icao}": {
+      "get": {
+        "tags": [
+          "Airport"
+        ],
+        "summary": "Gets one specific airport.",
+        "description": "sushi.at, 03/05/2021.",
+        "operationId": "FindOne",
+        "parameters": [
+          {
+            "name": "icao",
+            "in": "path",
+            "description": "The ICAO identifier of the airport.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Airport"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Airport"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Airport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register new OpenSky user.",
+        "description": "sushi.at, 06/05/2021.",
+        "requestBody": {
+          "description": "The register user.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/validateEmail": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmail"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmail"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmail"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DataImport/littleNavmapMSFS": {
+      "post": {
+        "tags": [
+          "DataImport"
+        ],
+        "summary": "Post LittleNavmap MSFS sqlite database for import.",
+        "description": "sushi.at, 04/05/2021.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fileUpload": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "fileUpload": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
                 }
               }
             }
@@ -47,15 +290,272 @@
   "components": {
     "schemas": {
       "Airport": {
+        "required": [
+          "icao",
+          "longestRunwaySurface",
+          "name"
+        ],
         "type": "object",
         "properties": {
-          "icao": {
+          "altitude": {
+            "type": "integer",
+            "description": "Gets or sets the altitude of the airport in feet.",
+            "format": "int32"
+          },
+          "atisFrequency": {
+            "type": "integer",
+            "description": "Gets or sets the ATIS frequency (if available).",
+            "format": "int32",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 50,
+            "minLength": 0,
             "type": "string",
+            "description": "Gets or sets the city.",
+            "nullable": true
+          },
+          "gaRamps": {
+            "type": "integer",
+            "description": "Gets or sets the number of GA ramps.",
+            "format": "int32"
+          },
+          "gates": {
+            "type": "integer",
+            "description": "Gets or sets the number of gates.",
+            "format": "int32"
+          },
+          "hasAvGas": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the airport has AV gas for refueling."
+          },
+          "hasJetFuel": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the airport has jet fuel for refueling."
+          },
+          "icao": {
+            "maxLength": 5,
+            "minLength": 3,
+            "type": "string",
+            "description": "Gets or sets the ICAO identifier of the airport."
+          },
+          "isClosed": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the airport is closed."
+          },
+          "isMilitary": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the airport is a military one."
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Gets or sets the latitude of the airport.",
+            "format": "double"
+          },
+          "longestRunwayLength": {
+            "type": "integer",
+            "description": "Gets or sets the length of the longest runway in feet.",
+            "format": "int32"
+          },
+          "longestRunwaySurface": {
+            "maxLength": 7,
+            "minLength": 0,
+            "type": "string",
+            "description": "Gets or sets the surface type of the longest runway (can be \"UNKNOWN\" in a few cases)."
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Gets or sets the longitude of the airport.",
+            "format": "double"
+          },
+          "name": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "Gets or sets the name."
+          },
+          "runways": {
+            "type": "integer",
+            "description": "Gets or sets the number of runways.",
+            "format": "int32"
+          },
+          "towerFrequency": {
+            "type": "integer",
+            "description": "Gets or sets the tower frequency (if available).",
+            "format": "int32",
+            "nullable": true
+          },
+          "unicomFrequency": {
+            "type": "integer",
+            "description": "Gets or sets the unicom frequency (if available).",
+            "format": "int32",
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Airport model."
+      },
+      "Login": {
+        "required": [
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "Gets or sets the password."
+          },
+          "username": {
+            "type": "string",
+            "description": "Gets or sets the username."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Login model."
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "expiration": {
+            "type": "string",
+            "description": "Gets or sets the Date/Time of the expiration.",
+            "format": "date-time"
+          },
+          "token": {
+            "type": "string",
+            "description": "Gets or sets the token.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Login response model."
+      },
+      "LoginResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/LoginResponse"
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
+      "RegisterUser": {
+        "required": [
+          "email",
+          "password",
+          "recaptchaToken",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Gets or sets the email.",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Gets or sets the password."
+          },
+          "recaptchaToken": {
+            "type": "string",
+            "description": "Gets or sets the recaptcha token."
+          },
+          "username": {
+            "maxLength": 15,
+            "minLength": 3,
+            "type": "string",
+            "description": "Gets or sets the username."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Register user model."
+      },
+      "StringApiResponse": {
+        "type": "object",
+        "properties": {
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          },
+          "data": {
+            "type": "string",
+            "description": "Gets or sets the embedded data of type T.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
+      "ValidateEmail": {
+        "required": [
+          "email",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Gets or sets the email.",
+            "format": "email"
+          },
+          "token": {
+            "type": "string",
+            "description": "Gets or sets the token."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Validate email model."
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme. \r\n\r\nEnter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: 'Bearer xxxxxxxxxxxxxxxxx'",
+        "name": "Authorization",
+        "in": "header"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
 }
