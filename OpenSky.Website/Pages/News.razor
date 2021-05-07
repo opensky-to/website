@@ -1,48 +1,5 @@
 ﻿@page "/news"
-@using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
-@inject OpenSkyService openSky
-@inject AlertService alertService
 
-<h1>API Test</h1>
+<h1>News</h1>
 
-<p>This component demonstrates fetching data from the OpenSky API server.</p>
-
-@if (icaos == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ICAO</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var icao in icaos)
-            {
-                <tr>
-                    <td>@icao</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-@code {
-    private ICollection<string> icaos;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            icaos = await openSky.AirportAsync();
-        }
-        catch (Exception ex)
-        {
-            alertService.Error(ex.Message);
-        }
-    }
-}
+<p>Todo</p>

@@ -108,3 +108,6 @@ textarea.form-control.invalid {
     display: block;
 }
 
+.grecaptcha-badge {
+    visibility: hidden;
+}

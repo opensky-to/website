@@ -18,8 +18,6 @@ namespace OpenSky.Website
 
     using OpenSkyApi;
 
-    using Radzen;
-
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
     /// The Blazor WASM main program entry point.
@@ -52,21 +50,13 @@ namespace OpenSky.Website
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped<AlertService>();
             builder.Services.AddScoped<UserSessionService>();
-
             var httpClient = new HttpClient();
             builder.Services.AddScoped(_ => httpClient);
             builder.Services.AddSingleton(new OpenSkyService(builder.Configuration["OpenSkyAPI:Url"], httpClient));
 
-            builder.Services.AddScoped<DialogService>();
-            builder.Services.AddScoped<NotificationService>();
-            builder.Services.AddScoped<TooltipService>();
-            builder.Services.AddScoped<ContextMenuService>();
-
             var host = builder.Build();
-
             var userSessionService = host.Services.GetRequiredService<UserSessionService>();
             await userSessionService.Initialize();
-
             await host.RunAsync();
         }
     }

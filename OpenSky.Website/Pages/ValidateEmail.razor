@@ -1,0 +1,51 @@
+﻿@page "/validateemail"
+@inject OpenSkyService openSky
+@inject NavigationManager navigationManager
+@inject AlertService alertService
+
+<div class="card">
+    <h4 class="card-header">Validate email</h4>
+    <div class="card-body">
+        @if (loading)
+        {
+            <p><span class="spinner-border spinner-border-sm mr-1"></span> Please wait while we verify your email address against your account record...</p>
+        }
+    </div>
+</div>
+
+@code
+{
+    private readonly OpenSkyApi.Login model = new OpenSkyApi.Login();
+    private bool loading = true;
+
+    private async void OnValidSubmit()
+    {
+        alertService.Clear();
+        loading = true;
+        try
+        {
+            var response = await openSky.LoginAsync(model);
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                model.Password = string.Empty;
+                loading = false;
+                StateHasChanged();
+            }
+            else
+            {
+
+                alertService.Success("Logged in successfully!", true);
+                var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
+                navigationManager.NavigateTo(returnUrl);
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            model.Password = string.Empty;
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}
