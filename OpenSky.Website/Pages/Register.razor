@@ -28,9 +28,6 @@
                 <InputText @bind-Value="model.Password" type="password" class="form-control" />
                 <ValidationMessage For="@(() => model.Password)" />
             </div>
-            <div class="form-group">
-                <div class="g-recaptcha" data-sitekey="6LeB4coaAAAAAEvV9aIlhVvmZobwIOu7eM9suXIp"></div>
-            </div>
             <button disabled="@loading" class="btn btn-primary">
                 @if (loading)
                 {
@@ -46,11 +43,6 @@
 {
     private readonly RegisterUser model = new();
     private bool loading;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await jsRuntime.InvokeVoidAsync("showCaptchaBadge");
-    }
 
     private async void OnValidSubmit()
     {
@@ -97,17 +89,23 @@
                 }
                 else
                 {
-                    throw;
+                    alertService.Error(ex.Message, false, false);
+                    model.Password = string.Empty;
+                    loading = false;
+                    StateHasChanged();
                 }
             }
             else
             {
-                throw;
+                alertService.Error(ex.Message, false, false);
+                model.Password = string.Empty;
+                loading = false;
+                StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.ToString(), false, false);
+            alertService.Error(ex.Message, false, false);
             model.Password = string.Empty;
             loading = false;
             StateHasChanged();

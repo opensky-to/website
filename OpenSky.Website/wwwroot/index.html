@@ -34,9 +34,15 @@
 
         showCaptchaBadge = function() {
             var badges = document.getElementsByClassName('grecaptcha-badge');
-            var i;
-            for (i = 0; i < badges.length; i++) {
+            for (var i = 0; i < badges.length; i++) {
                 badges[i].style.visibility = "visible";
+            }
+        };
+
+        hideCaptchaBadge = function () {
+            var badges = document.getElementsByClassName('grecaptcha-badge');
+            for (var i = 0; i < badges.length; i++) {
+                badges[i].style.visibility = "hidden";
             }
         };
     </script>

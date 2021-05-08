@@ -88,29 +88,29 @@
         }
       }
     },
-    "/Authentication/register": {
+    "/Authentication/changePassword": {
       "post": {
         "tags": [
           "Authentication"
         ],
-        "summary": "Register new OpenSky user.",
-        "description": "sushi.at, 06/05/2021.",
+        "summary": "Change OpenSky user password.",
+        "description": "sushi.at, 08/05/2021.",
         "requestBody": {
-          "description": "The register user.",
+          "description": "The change password model.",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterUser"
+                "$ref": "#/components/schemas/ChangePassword"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterUser"
+                "$ref": "#/components/schemas/ChangePassword"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterUser"
+                "$ref": "#/components/schemas/ChangePassword"
               }
             }
           }
@@ -139,26 +139,29 @@
         }
       }
     },
-    "/Authentication/validateEmail": {
+    "/Authentication/forgotPassword": {
       "post": {
         "tags": [
           "Authentication"
         ],
+        "summary": "Forgot password request from OpenSky user.",
+        "description": "sushi.at, 08/05/2021.",
         "requestBody": {
+          "description": "The forgot password model.",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ValidateEmail"
+                "$ref": "#/components/schemas/ForgotPassword"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ValidateEmail"
+                "$ref": "#/components/schemas/ForgotPassword"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ValidateEmail"
+                "$ref": "#/components/schemas/ForgotPassword"
               }
             }
           }
@@ -192,7 +195,10 @@
         "tags": [
           "Authentication"
         ],
+        "summary": "Login to OpenSky API.",
+        "description": "sushi.at, 08/05/2021.",
         "requestBody": {
+          "description": "The login model.",
           "content": {
             "application/json": {
               "schema": {
@@ -228,6 +234,210 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register new OpenSky user.",
+        "description": "sushi.at, 06/05/2021.",
+        "requestBody": {
+          "description": "The register user model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/resendValidationEmail": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Re-send the email validation.",
+        "description": "sushi.at, 08/05/2021.",
+        "requestBody": {
+          "description": "The resend validation email model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendValidationEmail"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendValidationEmail"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendValidationEmail"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/resetPassword": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset OpenSky user password.",
+        "description": "sushi.at, 08/05/2021.",
+        "requestBody": {
+          "description": "The reset password model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPassword"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPassword"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/validateEmail": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Validate email address of previously registered OpenSky user.",
+        "description": "sushi.at, 08/05/2021.",
+        "requestBody": {
+          "description": "The validate email model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmail"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmail"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmail"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
                 }
               }
             }
@@ -395,6 +605,45 @@
         "additionalProperties": false,
         "description": "Airport model."
       },
+      "ChangePassword": {
+        "required": [
+          "newPassword",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "description": "Gets or sets the password."
+          },
+          "password": {
+            "type": "string",
+            "description": "Gets or sets the password."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Change password model."
+      },
+      "ForgotPassword": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Gets or sets the email.",
+            "format": "email"
+          },
+          "recaptchaToken": {
+            "type": "string",
+            "description": "Gets or sets the recaptcha token.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Forgot password model."
+      },
       "Login": {
         "required": [
           "password",
@@ -405,6 +654,11 @@
           "password": {
             "type": "string",
             "description": "Gets or sets the password."
+          },
+          "recaptchaToken": {
+            "type": "string",
+            "description": "Gets or sets the recaptcha token.",
+            "nullable": true
           },
           "username": {
             "type": "string",
@@ -425,6 +679,11 @@
           "token": {
             "type": "string",
             "description": "Gets or sets the token.",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "description": "Gets or sets the username.",
             "nullable": true
           }
         },
@@ -492,6 +751,56 @@
         "additionalProperties": false,
         "description": "Register user model."
       },
+      "ResendValidationEmail": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Gets or sets the email.",
+            "format": "email"
+          },
+          "recaptchaToken": {
+            "type": "string",
+            "description": "Gets or sets the recaptcha token.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Resend validation email model."
+      },
+      "ResetPassword": {
+        "required": [
+          "email",
+          "password",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Gets or sets the email.",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Gets or sets the password."
+          },
+          "recaptchaToken": {
+            "type": "string",
+            "description": "Gets or sets the recaptcha token.",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "description": "Gets or sets the token."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Reset password model."
+      },
       "StringApiResponse": {
         "type": "object",
         "properties": {
@@ -534,6 +843,11 @@
             "type": "string",
             "description": "Gets or sets the email.",
             "format": "email"
+          },
+          "recaptchaToken": {
+            "type": "string",
+            "description": "Gets or sets the recaptcha token.",
+            "nullable": true
           },
           "token": {
             "type": "string",

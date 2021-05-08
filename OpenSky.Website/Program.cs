@@ -50,9 +50,8 @@ namespace OpenSky.Website
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped<AlertService>();
             builder.Services.AddScoped<UserSessionService>();
-            var httpClient = new HttpClient();
-            builder.Services.AddScoped(_ => httpClient);
-            builder.Services.AddSingleton(new OpenSkyService(builder.Configuration["OpenSkyAPI:Url"], httpClient));
+            builder.Services.AddScoped<HttpClient>();
+            builder.Services.AddScoped<OpenSkyService>();
 
             var host = builder.Build();
             var userSessionService = host.Services.GetRequiredService<UserSessionService>();
