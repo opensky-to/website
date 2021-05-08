@@ -1,50 +1,5 @@
 ﻿@page "/news"
-@using OpenSkyApi
-@using OpenSky.Website.Components
-@inject OpenSkyService OpenSky
 
-<h1>API Test</h1>
+<h1>News</h1>
 
-<p>This component demonstrates fetching data from the OpenSky API server.</p>
-
-@if (airports == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ICAO</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var airport in airports)
-            {
-                <tr>
-                    <td>@airport.Icao</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-@code {
-    [CascadingParameter(Name = "ErrorComponent")]
-    protected IErrorComponent ErrorComponent { get; set; }
-
-    private ICollection<Airport> airports;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            airports = await OpenSky.AirportAsync();
-        }
-        catch (Exception ex)
-        {
-            ErrorComponent.ShowError(ex.Message, ex.StackTrace);
-        }
-    }
-}
+<p>Todo</p>

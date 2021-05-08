@@ -1,0 +1,114 @@
+﻿@page "/register"
+@using Microsoft.Extensions.Configuration
+@using Newtonsoft.Json
+@using OpenSky.Website.OpenAPIs
+@inject OpenSkyService openSky
+@inject NavigationManager navigationManager
+@inject AlertService alertService
+@inject IJSRuntime jsRuntime
+@inject IConfiguration configuration
+
+<div class="card">
+    <h4 class="card-header">Register</h4>
+    <div class="card-body">
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>Username</label>
+                <InputText @bind-Value="model.Username" class="form-control" />
+                <ValidationMessage For="@(() => model.Username)" />
+            </div>
+            <div class="form-group">
+                <label>Email address</label>
+                <InputText @bind-Value="model.Email" class="form-control" />
+                <ValidationMessage For="@(() => model.Email)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="model.Password" type="password" class="form-control" />
+                <ValidationMessage For="@(() => model.Password)" />
+            </div>
+            <button disabled="@loading" class="btn btn-primary">
+                @if (loading)
+                {
+                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                }
+                Register
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code
+{
+    private readonly RegisterUser model = new();
+    private bool loading;
+
+    private async void OnValidSubmit()
+    {
+        alertService.Clear();
+        loading = true;
+        try
+        {
+            // Before we post the model to the API add the reCAPTCHA token
+            var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "register");
+            model.RecaptchaToken = captchaToken;
+
+            var response = await openSky.RegisterAsync(model);
+            if (response.IsError)
+            {
+                alertService.Error(response.Message, false, false);
+                model.Password = string.Empty;
+                loading = false;
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true, false);
+                navigationManager.NavigateTo("login");
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    model.Password = string.Empty;
+                    loading = false;
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    model.Password = string.Empty;
+                    loading = false;
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                model.Password = string.Empty;
+                loading = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            model.Password = string.Empty;
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}
