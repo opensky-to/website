@@ -1,30 +1,46 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>242cf81d-3597-4101-99e1-2bda690ac446</UserSecretsId>
+    <Authors>sushi.at</Authors>
+    <Company>OpenSky</Company>
+    <Product>OpenSky</Product>
+    <Description>Website for OpenSky</Description>
+    <Copyright>sushi.at for OpenSky 2021</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <OpenApiReference Include="OpenAPIs\swagger.json" Namespace="OpenSkyApi" ClassName="OpenSkyService">
       <CodeGenerator>NSwagCSharp</CodeGenerator>
-      <SourceUri>http://localhost:49174/swagger/v1/swagger.json</SourceUri>
+      <SourceUri>http://localhost:5000/swagger/v1/swagger.json</SourceUri>
     </OpenApiReference>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.5" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="5.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.10.9">
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.11.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Radzen.Blazor" Version="3.2.7" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,11 @@
 ﻿@page "/"
+@inject UserSessionService userSession
 
 <h1>OpenSky</h1>
 <p>A brand new airline manager experience!</p>
 <p>Coming Soon!</p>
-<RadzenButton Text="READ MORE"></RadzenButton>
+
+@if (userSession.IsUserLoggedIn)
+{
+    <p>Hi, @userSession.Username</p>
+}

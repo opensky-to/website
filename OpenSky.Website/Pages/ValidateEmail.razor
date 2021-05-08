@@ -1,0 +1,68 @@
+﻿@page "/validateemail"
+@using Microsoft.AspNetCore.WebUtilities
+@inject OpenSkyService openSky
+@inject NavigationManager navigationManager
+@inject AlertService alertService
+@inject IJSRuntime jsRuntime
+
+@if (loading)
+{
+    <div class="card">
+        <h4 class="card-header">Validate email</h4>
+        <div class="card-body">
+            <p><span class="spinner-border spinner-border-sm mr-1"></span> Please wait while we verify your email address against your account record...</p>
+        </div>
+    </div>
+}
+
+@code
+{
+    private readonly OpenSkyApi.ValidateEmail model = new();
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("email", out var email))
+        {
+            model.Email = email.ToString();
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
+        {
+            model.Token = token.ToString();
+        }
+
+        await ValidateEmailAddress();
+    }
+
+    private async Task ValidateEmailAddress()
+    {
+        alertService.Clear();
+        try
+        {
+            // Before we post the model to the API add the reCAPTCHA token
+            var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "validateEmail");
+            model.RecaptchaToken = captchaToken;
+
+            var response = await openSky.ValidateEmailAsync(model);
+            loading = false;
+            if (response.IsError)
+            {
+                alertService.Error(response.Message, false, false);
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true, false);
+                navigationManager.NavigateTo("/login");
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

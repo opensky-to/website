@@ -1,0 +1,126 @@
+﻿@using OpenSky.Website.Models
+@using OpenSky.Website.Services
+@implements IDisposable
+@inject AlertService alertService
+@inject NavigationManager navigationManager
+
+@foreach (var alert in alerts)
+{
+    <div class="@CssClass(alert)">
+        <a class="close" @onclick="@(() => RemoveAlert(alert))">&times;</a>
+        <span>@alert.Message</span>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "default-alert";
+
+    [Parameter]
+    public bool Fade { get; set; } = true;
+
+    private readonly List<Models.Alert> alerts = new List<Models.Alert>();
+
+    protected override void OnInitialized()
+    {
+        // Subscribe to new alerts and location change events
+        alertService.OnAlert += OnAlert;
+        navigationManager.LocationChanged += OnLocationChange;
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from alerts and location change events
+        alertService.OnAlert -= OnAlert;
+        navigationManager.LocationChanged -= OnLocationChange;
+    }
+
+    private async void OnAlert(Models.Alert alert)
+    {
+        // Ignore alerts sent to other alert components
+        if (alert.Id != Id)
+        {
+            return;
+        }
+
+        // Clear alerts when an empty alert is received
+        if (alert.Message == null)
+        {
+            // Remove alerts without the 'KeepAfterRouteChange' flag set to true
+            alerts.RemoveAll(x => !x.KeepAfterRouteChange);
+
+            // Set the 'KeepAfterRouteChange' flag to false for the remaining alerts so they are removed on the next clear
+            alerts.ForEach(x => x.KeepAfterRouteChange = false);
+        }
+        else
+        {
+            // Add alert to array
+            alerts.Add(alert);
+            StateHasChanged();
+
+            // Auto close alert if required
+            if (alert.AutoClose)
+            {
+                await Task.Delay(3000);
+                RemoveAlert(alert);
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private void OnLocationChange(object sender, LocationChangedEventArgs e)
+    {
+        alertService.Clear(Id);
+    }
+
+    private async void RemoveAlert(Models.Alert alert)
+    {
+        // Check if already removed to prevent error on auto close
+        if (!alerts.Contains(alert))
+        {
+            return;
+        }
+
+        if (Fade)
+        {
+            // Fade out alert
+            alert.Fade = true;
+
+            // Remove alert after faded out
+            await Task.Delay(250);
+            alerts.Remove(alert);
+        }
+        else
+        {
+            // Remove alert
+            alerts.Remove(alert);
+        }
+
+        StateHasChanged();
+    }
+
+    private string CssClass(Models.Alert alert)
+    {
+        if (alert == null) return null;
+
+        var classes = new List<string> { "alert", "alert-dismissable", "mt-4", "container" };
+
+        var alertTypeClass = new Dictionary<AlertType, string>
+        {
+            [AlertType.Success] = "alert-success",
+            [AlertType.Error] = "alert-danger",
+            [AlertType.Info] = "alert-info",
+            [AlertType.Warning] = "alert-warning"
+        };
+
+        classes.Add(alertTypeClass[alert.Type]);
+
+        if (alert.Fade)
+        {
+            classes.Add("fade");
+        }
+
+        return string.Join(' ', classes);
+    }
+}
