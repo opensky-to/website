@@ -11,6 +11,8 @@ namespace OpenSky.Website.Services
 
     using Blazored.LocalStorage;
 
+    using OpenSkyApi;
+
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
     /// User session service.
@@ -107,29 +109,23 @@ namespace OpenSky.Website.Services
         /// <remarks>
         /// sushi.at, 07/05/2021.
         /// </remarks>
-        /// <param name="token">
-        /// The new OpenSky api token.
-        /// </param>
-        /// <param name="expiration">
-        /// The expiration Date/Time of the token.
-        /// </param>
-        /// <param name="username">
-        /// The username.
+        /// <param name="login">
+        /// The login response received from the OpenSky API.
         /// </param>
         /// <returns>
         /// An asynchronous result.
         /// </returns>
         /// -------------------------------------------------------------------------------------------------
-        public async Task LoggedIn(string token, DateTime expiration, string username)
+        public async Task LoggedIn(LoginResponse login)
         {
-            if (!string.IsNullOrEmpty(token))
+            if (!string.IsNullOrEmpty(login.Token))
             {
                 this.IsUserLoggedIn = true;
-                this.OpenSkyApiToken = token;
-                this.Username = username;
-                await this.localStore.SetItemAsync("OpenSkyApiToken", token);
-                await this.localStore.SetItemAsync("OpenSkyApiTokenExpiration", expiration);
-                await this.localStore.SetItemAsync("OpenSkyUser", username);
+                this.OpenSkyApiToken = login.Token;
+                this.Username = login.Username;
+                await this.localStore.SetItemAsync("OpenSkyApiToken", login.Token);
+                await this.localStore.SetItemAsync("OpenSkyApiTokenExpiration", login.Expiration);
+                await this.localStore.SetItemAsync("OpenSkyUser", login.Username);
                 if (this.NotifyUserChanged != null)
                 {
                     await this.NotifyUserChanged.Invoke(true);
