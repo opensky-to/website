@@ -6,7 +6,7 @@
             "type": "blazorwasm",
             "request": "launch",
             "cwd": "${workspaceFolder}/OpenSky.Website",
-            "url": "http://localhost:5000"
+            "url": "http://localhost:5001"
         }
     ]
 }
