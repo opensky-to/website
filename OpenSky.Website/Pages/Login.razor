@@ -7,85 +7,95 @@
 @inject UserSessionService userSession
 @inject IJSRuntime jsRuntime
 
-<div class="card">
-    <h4 class="card-header">Login</h4>
-    <div class="card-body">
-        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-            <DataAnnotationsValidator />
-            <div class="form-group">
-                <label>Username</label>
-                <InputText @bind-Value="model.Username" class="form-control" />
-                <ValidationMessage For="@(() => model.Username)" />
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <InputText @bind-Value="model.Password" type="password" class="form-control" />
-                <ValidationMessage For="@(() => model.Password)" />
-            </div>
-            <button disabled="@loading" class="btn btn-primary">
-                @if (loading)
-                {
-                    <span class="spinner-border spinner-border-sm mr-1"></span>
-                }
-                Login
-            </button>
-            <NavLink href="register" class="btn btn-secondary">Register</NavLink>
-            <NavLink href="forgotpassword" class="btn btn-secondary">Forgot Password</NavLink>
-            <NavLink href="resendvalidationemail" class="btn btn-secondary">Resend Validation Email</NavLink>
-        </EditForm>
-    </div>
-</div>
-<a href="https://tools.keycdn.com/geo">[IP Location Finder by KeyCDN]</a>
-
-@code
-{
-    private readonly OpenSkyApi.Login model = new();
-    private bool loading;
-
-    private async void OnValidSubmit()
-    {
-        alertService.Clear();
-        loading = true;
-        try
-        {
-            // Before we post the model to the API add the reCAPTCHA token
-            var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "login");
-            model.RecaptchaToken = captchaToken;
-
-            var response = await openSky.LoginAsync(model);
-            if (response.IsError)
-            {
-                alertService.Error(response.Message);
-                model.Password = string.Empty;
-                loading = false;
-                StateHasChanged();
-            }
-            else
-            {
-                await userSession.LoggedIn(response.Data);
-                alertService.Success(response.Message, true);
-                var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
-                navigationManager.NavigateTo(returnUrl);
-            }
-        }
-        catch (ApiException ex)
-        {
-            if (!string.IsNullOrEmpty(ex.Response))
-            {
-                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
-                if (problemDetails != null)
-                {
-                    foreach (var problemDetailsError in problemDetails.Errors)
-                    {
-                        foreach (var errorMessage in problemDetailsError.Value)
+    <div class="container">
+        <div class="card">
+            <h4 class="card-header">Login</h4>
+            <div class="card-body">
+                <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label>Username</label>
+                        <InputText @bind-Value="model.Username" class="form-control" />
+                        <ValidationMessage For="@(() => model.Username)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <InputText @bind-Value="model.Password" type="password" class="form-control" />
+                        <ValidationMessage For="@(() => model.Password)" />
+                    </div>
+                    <button disabled="@loading" class="btn btn-primary">
+                        @if (loading)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            <span class="spinner-border spinner-border-sm mr-1"></span>
                         }
-                    }
+                        Login
+                    </button>
+                    <NavLink href="register" class="btn btn-secondary">Register</NavLink>
+                    <NavLink href="forgotpassword" class="btn btn-secondary">Forgot Password</NavLink>
+                    <NavLink href="resendvalidationemail" class="btn btn-secondary">Resend Validation Email</NavLink>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+    <a href="https://tools.keycdn.com/geo">[IP Location Finder by KeyCDN]</a>
 
+    @code
+{
+        private readonly OpenSkyApi.Login model = new();
+        private bool loading;
+
+        private async void OnValidSubmit()
+        {
+            alertService.Clear();
+            loading = true;
+            try
+            {
+                // Before we post the model to the API add the reCAPTCHA token
+                var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "login");
+                model.RecaptchaToken = captchaToken;
+
+                var response = await openSky.LoginAsync(model);
+                if (response.IsError)
+                {
+                    alertService.Error(response.Message);
                     model.Password = string.Empty;
                     loading = false;
                     StateHasChanged();
+                }
+                else
+                {
+                    await userSession.LoggedIn(response.Data);
+                    alertService.Success(response.Message, true);
+                    var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
+                    navigationManager.NavigateTo(returnUrl);
+                }
+            }
+            catch (ApiException ex)
+            {
+                if (!string.IsNullOrEmpty(ex.Response))
+                {
+                    var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                    if (problemDetails != null)
+                    {
+                        foreach (var problemDetailsError in problemDetails.Errors)
+                        {
+                            foreach (var errorMessage in problemDetailsError.Value)
+                            {
+                                alertService.Error(errorMessage, false, false);
+                            }
+                        }
+
+                        model.Password = string.Empty;
+                        loading = false;
+                        StateHasChanged();
+                    }
+                    else
+                    {
+                        alertService.Error(ex.Message, false, false);
+                        model.Password = string.Empty;
+                        loading = false;
+                        StateHasChanged();
+                    }
                 }
                 else
                 {
@@ -95,7 +105,7 @@
                     StateHasChanged();
                 }
             }
-            else
+            catch (Exception ex)
             {
                 alertService.Error(ex.Message, false, false);
                 model.Password = string.Empty;
@@ -103,12 +113,4 @@
                 StateHasChanged();
             }
         }
-        catch (Exception ex)
-        {
-            alertService.Error(ex.Message, false, false);
-            model.Password = string.Empty;
-            loading = false;
-            StateHasChanged();
-        }
     }
-}
