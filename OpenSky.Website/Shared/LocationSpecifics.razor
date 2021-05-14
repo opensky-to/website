@@ -1,0 +1,60 @@
+﻿@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+
+@code {
+    private readonly List<string> captchaLocations = new() { "/register", "/resendvalidationemail", "/login", "/validateemail", "/forgotpassword", "/resetpassword" };
+
+    private readonly List<string> transparentNavLocations = new() { "/" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        navigationManager.LocationChanged += OnLocationChange;
+
+        var location = navigationManager.Uri.Split('?')[0];
+        if (captchaLocations.Any(loc => location.EndsWith(loc)))
+        {
+            await jsRuntime.InvokeVoidAsync("showCaptchaBadge");
+        }
+        else
+        {
+            await jsRuntime.InvokeVoidAsync("hideCaptchaBadge");
+        }
+
+        if (transparentNavLocations.Any(loc => location.EndsWith(loc)))
+        {
+            await jsRuntime.InvokeVoidAsync("makeNavbarTransparent");
+        }
+        else
+        {
+            await jsRuntime.InvokeVoidAsync("makeNavbarOpaque");
+        }
+    }
+
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= OnLocationChange;
+    }
+
+    private async void OnLocationChange(object sender, LocationChangedEventArgs e)
+    {
+        var location = e.Location.Split('?')[0];
+        Console.WriteLine(location);
+        if (captchaLocations.Any(loc => location.EndsWith(loc)))
+        {
+            await jsRuntime.InvokeVoidAsync("showCaptchaBadge");
+        }
+        else
+        {
+            await jsRuntime.InvokeVoidAsync("hideCaptchaBadge");
+        }
+
+        if (transparentNavLocations.Any(loc => location.EndsWith(loc)))
+        {
+            await jsRuntime.InvokeVoidAsync("makeNavbarTransparent");
+        }
+        else
+        {
+            await jsRuntime.InvokeVoidAsync("makeNavbarOpaque");
+        }
+    }
+}

@@ -7,8 +7,19 @@
     background-color: rgba(0,0,0,0.4);
 }
 
+.navbar {
+    padding: 10px !important;
+    font-family: 'Montserrat', sans-serif;
+    background: #29323c;
+}
+
+.navcontainer {
+    width: 100%;
+    display: flex;
+}
+
 .navbar-brand {
-    font-size: 1.3rem;
+    font-size: 3rem;
 }
 
 .oi {
@@ -19,7 +30,7 @@
 }
 
 .nav-item {
-    font-size: 0.9rem;
+    font-size: 2.5rem;
     padding-bottom: 0.5rem;
 }
 
@@ -33,11 +44,11 @@
     }
 
         .nav-item ::deep a.active {
-            border: 2px solid aqua;
+            border-bottom: 2px solid #08c6a4;
         }
 
         .nav-item ::deep a:hover {
-            border: 2px solid aquamarine;
+            color: #08c6a4 !important;
         }
 
 @media (min-width: 641px) {

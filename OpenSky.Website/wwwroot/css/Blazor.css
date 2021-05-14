@@ -12,12 +12,12 @@
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 a.navbar-brand {
     white-space: normal;
@@ -25,24 +25,9 @@ a.navbar-brand {
     word-break: break-all;
 }
 
-/*a {
-    color: #0366d6;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}*/
-
-/*.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}*/
-
 html {
-    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -62,11 +47,6 @@ html {
 .box-shadow {
     box-shadow: 0 .25rem .75rem #000000;
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-html {
-    position: relative;
-    min-height: 100%;
 }
 
 .validation-message {
@@ -90,10 +70,10 @@ html {
     background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
 
-.form-control.invalid:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-}
+    .form-control.invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
 
 textarea.form-control.invalid {
     padding-right: calc(1.5em + 0.75rem);

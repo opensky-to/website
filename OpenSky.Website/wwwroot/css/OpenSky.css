@@ -1,0 +1,174 @@
+﻿@import 'https://fonts.googleapis.com/css?family=Montserrat:300, 400, 700&display=swap';
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    scroll-behavior: smooth;
+}
+
+a {
+    text-decoration: none;
+}
+
+.container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+p {
+    color: black;
+    font-size: 1.4rem;
+    margin-top: 5px;
+    line-height: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 0.05rem;
+}
+
+/* Home Section */
+#home {
+    background-image: url(/img/3motor.jpg);
+    background-size: cover;
+    background-position: top center;
+    position: relative;
+    z-index: 1;
+}
+
+    #home::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.7;
+        z-index: -1;
+    }
+
+#home .home {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 50px;
+        justify-content: flex-start;
+    }
+
+#home h1 {
+    display: block;
+    width: fit-content;
+    font-size: 4rem;
+    position: relative;
+    color: transparent;
+    animation: text_reveal 0.5s ease forwards;
+    animation-delay: 1s;
+}
+
+    #home h1:nth-child(1) {
+        animation-delay: 1s;
+    }
+
+    #home h1:nth-child(2) {
+        animation-delay: 2s;
+    }
+
+    #home h1:nth-child(3) {
+        animation: text_reveal_name 0.5s ease forwards;
+        animation-delay: 3s;
+    }
+
+    #home h1 span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0;
+        background-color: #08c6a4;
+        animation: text_reveal_box 1s ease;
+        animation-delay: 0.5s;
+    }
+
+    #home h1:nth-child(1) span {
+        animation-delay: 0.5s;
+    }
+
+    #home h1:nth-child(2) span {
+        animation-delay: 1.5s;
+    }
+
+    #home h1:nth-child(3) span {
+        animation-delay: 2.5s;
+    }
+
+/* End Hero Section */
+
+/* Keyframes */
+@keyframes hamburger_puls {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.4);
+    }
+}
+
+@keyframes text_reveal_box {
+    50% {
+        width: 100%;
+        left: 0;
+    }
+
+    100% {
+        width: 0;
+        left: 100%;
+    }
+}
+
+@keyframes text_reveal {
+    100% {
+        color: white;
+    }
+}
+
+@keyframes text_reveal_name {
+    100% {
+        color: #08c6a4;
+        font-weight: 500;
+    }
+}
+/* End Keyframes */
+
+/* Header section */
+
+#header {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: auto;
+}
+
+    #header .header {
+        min-height: 8vh;
+        background-color: rgba(31, 30, 30, 0.24);
+        transition: 0.3s ease background-color;
+    }
+
+/* End Header */

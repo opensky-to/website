@@ -11,6 +11,8 @@ namespace OpenSky.Website
 
     using Blazored.LocalStorage;
 
+    using BlazorTransitionableRoute;
+
     using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -52,6 +54,7 @@ namespace OpenSky.Website
             builder.Services.AddScoped<UserSessionService>();
             builder.Services.AddScoped<HttpClient>();
             builder.Services.AddScoped<OpenSkyService>();
+            builder.Services.AddScoped<BlazorTransitionableRoute.IRouteTransitionInvoker, DefaultRouteTransitionInvoker>();
 
             var host = builder.Build();
             var userSessionService = host.Services.GetRequiredService<UserSessionService>();
