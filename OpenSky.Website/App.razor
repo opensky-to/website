@@ -3,17 +3,18 @@
     <Found Context="routeData">
         <LayoutView Layout="@typeof(MainLayout)">
             <TransitionableRoutePrimary RouteData="@routeData" ForgetStateOnTransition="true">
-                <TransitionableRouteView DefaultLayout="@typeof(MyViewLayout)" />
+                <TransitionableRouteView DefaultLayout="@typeof(TransitionLayout)" />
             </TransitionableRoutePrimary>
             <TransitionableRouteSecondary RouteData="@routeData" ForgetStateOnTransition="true">
-                <TransitionableRouteView DefaultLayout="@typeof(MyViewLayout)" />
+                <TransitionableRouteView DefaultLayout="@typeof(TransitionLayout)" />
             </TransitionableRouteSecondary>
         </LayoutView>
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
-            <div class="container">
-                <p>Sorry, there's nothing at this address. TODO: Design custom 404 page!</p>
+            <div class="container" style="background: #555555; flex-direction: column; margin: 0; min-width: 100%;">
+                <img src="/img/404.svg" alt="404 Page Not Found" />
+                <p style="color: white; font-size: 3rem; text-align: center">Sorry, looks like you missed that flight.</p>
             </div>
         </LayoutView>
     </NotFound>

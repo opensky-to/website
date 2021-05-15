@@ -1,0 +1,32 @@
+﻿@inherits BlazorTransitionableRoute.TransitionableLayoutComponent
+
+<div class="transition @TransitioningClass @(Transition.IntoView ? "transitioned" : "transitioned_behind")">
+    @Body
+</div>
+
+<style>
+    .transition {
+        position: absolute;
+        width: 100%;
+    }
+
+    .transitioned {
+        z-index: 1;
+    }
+
+    .transitioned_behind {
+        z-index: 0;
+    }
+</style>
+
+@code {
+    private string TransitioningClass => Transition.FirstRender
+        ? "" : $"animate__{TransitioningEffect()} animate__faster animate__animated";
+
+    private string TransitioningEffect()
+    {
+        var effect = Transition.IntoView ? "fadeIn" : "fadeOut";
+        var direction = Transition.Backwards ? "Up" : "Down";
+        return effect + direction;
+    }
+}

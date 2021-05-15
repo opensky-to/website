@@ -12,6 +12,11 @@ html {
     scroll-behavior: smooth;
 }
 
+body {
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
 a {
     text-decoration: none;
 }
@@ -39,15 +44,36 @@ p {
     letter-spacing: 0.05rem;
 }
 
-.btn {
-    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
-    padding: 1.25rem 2rem;
-    font-family: $font-family-special;
-    font-size: 80%;
-    text-transform: uppercase;
-    letter-spacing: 0.15rem;
-    border: 0;
+/* Login section */
+
+#login {
+    background-image: url(/img/3motor.jpg);
+    background-size: cover;
+    background-position: top center;
+    position: relative;
+    z-index: 1;
 }
+
+    #login::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.7;
+        z-index: -1;
+    }
+
+.remember-me {
+    color: #bbb;
+    font-size: 14px;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* End Login */
 
 /* Home Section */
 #home {
@@ -70,58 +96,58 @@ p {
         z-index: -1;
     }
 
-#home .home {
+    #home .home {
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 50px;
         justify-content: flex-start;
     }
 
-#home h1 {
-    display: block;
-    width: fit-content;
-    font-size: 4rem;
-    position: relative;
-    color: transparent;
-    animation: text_reveal 0.5s ease forwards;
-    animation-delay: 1s;
-}
-
-    #home h1:nth-child(1) {
+    #home h1 {
+        display: block;
+        width: fit-content;
+        font-size: 4rem;
+        position: relative;
+        color: transparent;
+        animation: text_reveal 0.5s ease forwards;
         animation-delay: 1s;
     }
 
-    #home h1:nth-child(2) {
-        animation-delay: 2s;
-    }
+        #home h1:nth-child(1) {
+            animation-delay: 1s;
+        }
 
-    #home h1:nth-child(3) {
-        animation: text_reveal_name 0.5s ease forwards;
-        animation-delay: 3s;
-    }
+        #home h1:nth-child(2) {
+            animation-delay: 2s;
+        }
 
-    #home h1 span {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 0;
-        background-color: #08c6a4;
-        animation: text_reveal_box 1s ease;
-        animation-delay: 0.5s;
-    }
+        #home h1:nth-child(3) {
+            animation: text_reveal_name 0.5s ease forwards;
+            animation-delay: 3s;
+        }
 
-    #home h1:nth-child(1) span {
-        animation-delay: 0.5s;
-    }
+        #home h1 span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background-color: #08c6a4;
+            animation: text_reveal_box 1s ease;
+            animation-delay: 0.5s;
+        }
 
-    #home h1:nth-child(2) span {
-        animation-delay: 1.5s;
-    }
+        #home h1:nth-child(1) span {
+            animation-delay: 0.5s;
+        }
 
-    #home h1:nth-child(3) span {
-        animation-delay: 2.5s;
-    }
+        #home h1:nth-child(2) span {
+            animation-delay: 1.5s;
+        }
+
+        #home h1:nth-child(3) span {
+            animation-delay: 2.5s;
+        }
 
 /* End Home Section */
 
@@ -175,12 +201,6 @@ p {
     height: auto;
 }
 
-    /*#header .header {
-        min-height: 8vh;
-        background-color: rgba(31, 30, 30, 0.24);
-        transition: 0.3s ease background-color;
-    }*/
-
     #header .navbar-collapse ul a {
         font-size: 2.5rem;
         font-weight: 500;
@@ -215,3 +235,79 @@ p {
     }
 
 /* End Header */
+
+/* Loader section */
+
+.loader {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-top: 30px;
+}
+
+    .loader span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: rotate(calc(18deg*var(--i)));
+    }
+
+        .loader span::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            background: #08c6a4;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: animate 0.5s linear infinite;
+            animation-delay: calc(0.01s*var(--i));
+        }
+
+@keyframes animate {
+    0% {
+        transform: scale(0);
+    }
+
+    10% {
+        transform: scale(1.2);
+    }
+
+    80%,100% {
+        transform: scale(0);
+    }
+}
+
+/* End Loader */
+
+/* Media Query For Desktop */
+@media only screen and (min-width: 1200px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    #header .navbar-collapse ul {
+        position: initial;
+        display: block;
+        height: auto;
+        width: fit-content;
+        background-color: transparent;
+    }
+
+        #header .navbar-collapse ul li {
+            display: inline-block;
+        }
+
+            #header .navbar-collapse ul li a {
+                font-size: 1.3rem;
+            }
+
+        #header .navbar-collapse ul a:after {
+            display: none;
+        }
+}
+/* End  Media Query For Desktop */
