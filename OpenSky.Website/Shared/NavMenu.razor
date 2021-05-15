@@ -1,87 +1,91 @@
 ﻿@inject UserSessionService userSession
 @inject IJSRuntime jsRuntime
 
-    <div id="header">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark box-shadow">
-            <div class="navcontainer">
-                <a class="navbar-brand" href="">OPEN<span style="color: #08c6a4;">SKY</span></a>
-                <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-                    <ul class="navbar-nav ml-auto">
+<div id="header">
+    <nav class="navbar navbar-expand-md navbar-dark box-shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">OPEN<span style="color: #08c6a4;">SKY</span></a>
+            <button class="@NavTogglerClass" type="button" @onclick="ToggleNavMenu" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                @*<span class="navbar-toggler-icon"></span>*@
+                <div class="bar"></div>
+            </button>
+            <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+                <ul class="navbar-nav mb-lg-0">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All" data-after="HOME">
+                            HOME
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="about" data-after="ABOUT">
+                            ABOUT
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="news" data-after="NEWS">
+                            NEWS
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="https://forum.opensky.to" target="_blank" data-after="FORUMS">
+                            FORUMS
+                        </NavLink>
+                    </li>
+                    @if (!userSession.IsUserLoggedIn)
+                    {
                         <li class="nav-item">
-                            <NavLink class="nav-link text-light" href="" Match="NavLinkMatch.All">
-                                HOME
+                            <NavLink class="nav-link text-light" href="login">
+                                LOGIN
+                            </NavLink>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-light" href="changepassword">
+                                CHANGE PASSWORD
                             </NavLink>
                         </li>
                         <li class="nav-item">
-                            <NavLink class="nav-link text-light" href="about">
-                                ABOUT
+                            <NavLink class="nav-link text-light" href="logout">
+                                LOGOUT
                             </NavLink>
                         </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link text-light" href="news">
-                                NEWS
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link text-light" href="https://forum.opensky.to" target="_blank">
-                                FORUMS
-                            </NavLink>
-                        </li>
-                        @if (!userSession.IsUserLoggedIn)
-                        {
-                            <li class="nav-item">
-                                <NavLink class="nav-link text-light" href="login">
-                                    LOGIN
-                                </NavLink>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <NavLink class="nav-link text-light" href="changepassword">
-                                    CHANGE PASSWORD
-                                </NavLink>
-                            </li>
-                            <li class="nav-item">
-                                <NavLink class="nav-link text-light" href="logout">
-                                    LOGOUT
-                                </NavLink>
-                            </li>
-                        }
-                    </ul>
-                </div>
+                    }
+                </ul>
             </div>
-        </nav>
-    </div>
+        </div>
+    </nav>
+</div>
 
-    @code {
-        bool collapseNavMenu = true;
-        string baseMenuClass = "navbar-collapse d-sm-inline-flex flex-sm-row-reverse";
-        string NavMenuCssClass => baseMenuClass + (collapseNavMenu ? " collapse" : "");
+@code {
+    bool collapseNavMenu = true;
+    const string BaseMenuClass = "navbar-collapse d-md-inline-flex flex-md-row-reverse";
+    string NavMenuCssClass => BaseMenuClass + (collapseNavMenu ? " collapse" : "");
 
-        void ToggleNavMenu()
+    const string BaseNavTogglerClass = "navbar-toggler";
+    string NavTogglerClass => BaseNavTogglerClass + (!collapseNavMenu ? " active" : "");
+
+    void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        userSession.NotifyUserChanged += this.OnUserChanged;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
         {
-            collapseNavMenu = !collapseNavMenu;
-        }
-
-        protected override void OnInitialized()
-        {
-            userSession.NotifyUserChanged += this.OnUserChanged;
-        }
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (firstRender)
-            {
-                jsRuntime.InvokeVoidAsync("configureNavBar");
-            }
-        }
-
-        private async Task OnUserChanged(bool userLoggedIn)
-        {
-            await InvokeAsync(StateHasChanged);
+            jsRuntime.InvokeVoidAsync("configureNavBar");
         }
     }
+
+    private async Task OnUserChanged(bool userLoggedIn)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+}
