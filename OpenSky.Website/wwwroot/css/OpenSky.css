@@ -39,6 +39,16 @@ p {
     letter-spacing: 0.05rem;
 }
 
+.btn {
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
+    padding: 1.25rem 2rem;
+    font-family: $font-family-special;
+    font-size: 80%;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    border: 0;
+}
+
 /* Home Section */
 #home {
     background-image: url(/img/3motor.jpg);
@@ -113,10 +123,10 @@ p {
         animation-delay: 2.5s;
     }
 
-/* End Hero Section */
+/* End Home Section */
 
 /* Keyframes */
-@keyframes hamburger_puls {
+@keyframes navbar_toggler_puls {
     0% {
         opacity: 1;
         transform: scale(1);
@@ -165,10 +175,43 @@ p {
     height: auto;
 }
 
-    #header .header {
+    /*#header .header {
         min-height: 8vh;
         background-color: rgba(31, 30, 30, 0.24);
         transition: 0.3s ease background-color;
+    }*/
+
+    #header .navbar-collapse ul a {
+        font-size: 2.5rem;
+        font-weight: 500;
+        letter-spacing: 0.2rem;
+        text-decoration: none;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 20px;
+        display: block;
+    }
+
+        #header .navbar-collapse ul a::after {
+            content: attr(data-after);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: rgba(240, 248, 255, 0.021);
+            font-size: 13rem;
+            letter-spacing: 50px;
+            z-index: -1;
+            transition: 0.3s ease letter-spacing;
+        }
+
+    #header .navbar-collapse ul li:hover a::after {
+        transform: translate(-50%, -50%) scale(1);
+        letter-spacing: initial;
+    }
+
+    #header .navbar-collapse ul li:hover a {
+        color: #08c6a4;
     }
 
 /* End Header */
