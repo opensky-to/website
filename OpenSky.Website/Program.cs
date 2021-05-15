@@ -54,7 +54,7 @@ namespace OpenSky.Website
             builder.Services.AddScoped<UserSessionService>();
             builder.Services.AddScoped<HttpClient>();
             builder.Services.AddScoped<OpenSkyService>();
-            builder.Services.AddScoped<BlazorTransitionableRoute.IRouteTransitionInvoker, DefaultRouteTransitionInvoker>();
+            builder.Services.AddScoped<IRouteTransitionInvoker, DefaultRouteTransitionInvoker>();
 
             var host = builder.Build();
             var userSessionService = host.Services.GetRequiredService<UserSessionService>();

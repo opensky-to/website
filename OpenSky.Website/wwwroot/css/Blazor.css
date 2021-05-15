@@ -30,12 +30,6 @@ html {
     min-height: 100%;
 }
 
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
 .border-top {
     border-top: 1px solid #e5e5e5;
 }
@@ -53,8 +47,9 @@ html {
     display: none;
     width: 100%;
     margin-top: 0.25rem;
-    font-size: 80%;
+    font-size: 1rem;
     color: #dc3545;
+    font-weight: bold;
 }
 
 .invalid ~ .validation-message {
@@ -90,4 +85,175 @@ textarea.form-control.invalid {
 
 .grecaptcha-badge {
     visibility: hidden;
+    z-index: 99;
+}
+
+.btn {
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
+    padding: 1.25rem 2rem;
+    font-size: 80%;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    border: 0;
+}
+
+.btn-primary {
+    background-color: #08c6a4;
+    font-weight: bold;
+}
+
+    .btn-primary:hover {
+        background-color: #05826c;
+    }
+
+    .btn-primary:focus {
+        background-color: #08c6a4;
+    }
+
+.card {
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 5px rgba(25, 211, 155, 0.575);
+    padding: 40px;
+    border-radius: 3px;
+}
+
+.card-header {
+    color: white;
+    text-align: center;
+    font-weight: bolder;
+    font-size: 2rem;
+}
+
+.alert {
+    font-size: 1.5rem;
+}
+
+.close {
+    color: #222222;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-control {
+    height: 55px;
+    outline: none;
+    border: none;
+    background: rgba(255, 255, 255, 0.6);
+    color: #000;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 3px;
+    transition: 0.5s;
+    transition-property: border-left, border-right, box-shadow;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: red;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #a8bbbf;
+    }
+
+
+/* Base for label styling */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+    position: absolute;
+    left: 0;
+    opacity: 0.01;
+}
+
+    [type="checkbox"]:not(:checked) + label,
+    [type="checkbox"]:checked + label {
+        position: relative;
+        padding-left: 2.3em;
+        font-size: 1.05em;
+        line-height: 1.7;
+        cursor: pointer;
+    }
+
+        /* checkbox aspect */
+        [type="checkbox"]:not(:checked) + label:before,
+        [type="checkbox"]:checked + label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.4em;
+            height: 1.4em;
+            border: 1px solid #aaa;
+            background: #FFF;
+            border-radius: .2em;
+            box-shadow: inset 0 1px 3px rgba(0,0,0, .1), 0 0 0 rgba(203, 34, 237, .2);
+            -webkit-transition: all .275s;
+            transition: all .275s;
+        }
+
+        /* checked mark aspect */
+        [type="checkbox"]:not(:checked) + label:after,
+        [type="checkbox"]:checked + label:after {
+            content: '✕';
+            position: absolute;
+            top: .525em;
+            left: .18em;
+            font-size: 1.375em;
+            color: #CB22ED;
+            line-height: 0;
+            -webkit-transition: all .2s;
+            transition: all .2s;
+        }
+
+        /* checked mark aspect changes */
+        [type="checkbox"]:not(:checked) + label:after {
+            opacity: 0;
+            -webkit-transform: scale(0) rotate(45deg);
+            transform: scale(0) rotate(45deg);
+        }
+
+        [type="checkbox"]:checked + label:after {
+            opacity: 1;
+            -webkit-transform: scale(1) rotate(0);
+            transform: scale(1) rotate(0);
+        }
+
+/* Disabled checkbox */
+[type="checkbox"]:disabled:not(:checked) + label:before,
+[type="checkbox"]:disabled:checked + label:before {
+    box-shadow: none;
+    border-color: #bbb;
+    background-color: #e9e9e9;
+}
+
+[type="checkbox"]:disabled:checked + label:after {
+    color: #777;
+}
+
+[type="checkbox"]:disabled + label {
+    color: #aaa;
+}
+
+/* Accessibility */
+[type="checkbox"]:checked:focus + label:before,
+[type="checkbox"]:not(:checked):focus + label:before {
+    box-shadow: inset 0 1px 3px rgba(0,0,0, .1), 0 0 0 6px rgba(203, 34, 237, .2);
 }
