@@ -11,9 +11,12 @@
     <div class="container">
         <div style="flex-direction: column">
             <Alert />
-            <div class="card" style="width: 400px;">
-                <h4 class="card-header">Login</h4>
-                <div class="card-body">
+            <div class="card" style="width: 450px; align-items: center;">
+                <img src="img/idcard.png" alt="passport login" style="width: 132px; height: 150px;" />
+                <h4 class="card-header">
+                    Login to OPEN<span style="color: #08c6a4;">SKY</span>
+                </h4>
+                <div class="card-body" style="width: 100%">
                     <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
                         <DataAnnotationsValidator />
                         <div class="form-group">
@@ -24,11 +27,13 @@
                             <InputText @bind-Value="model.Password" type="password" class="form-control" placeHolder="Password" />
                             <ValidationMessage For="@(() => model.Password)" />
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="padding-bottom: 30px;">
                             <div class="custom-checkbox">
-                            <InputCheckbox @bind-Value="rememberMe" id="rememberMeCheck"></InputCheckbox>
-                                <label class="remember-me" for="rememberMeCheck">Remember me</label>
+                                <InputCheckbox @bind-Value="rememberMe" id="rememberMeCheck"></InputCheckbox>
+                                <label class="remember-me" for="rememberMeCheck" style="float: left;">Remember me</label>
                             </div>
+                            
+                            <NavLink href="resetpassword" style="float: right;">Forgot your password?</NavLink>
                         </div>
                         <button disabled="@loading" class="btn btn-primary" style="width: 100%">
                             @if (loading)
@@ -37,17 +42,17 @@
                             }
                             Login
                         </button>
-                        <br />
-                        @*<NavLink href="register" class="btn btn-secondary">Register</NavLink>
-                            <NavLink href="forgotpassword" class="btn btn-secondary">Forgot Password</NavLink>
-                            <NavLink href="resendvalidationemail" class="btn btn-secondary">Resend Validation Email</NavLink>*@
+                        <div style="margin-top: 30px; text-align: center; width: 100%; color: #bbb;">
+                            Not registered? <NavLink href="register">Create an Account</NavLink>
+                        </div>
                     </EditForm>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<a href="https://tools.keycdn.com/geo">[IP Location Finder by KeyCDN]</a>
+
+<PageFooter />
 
 @code
     {
