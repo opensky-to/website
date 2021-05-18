@@ -48,8 +48,11 @@ html {
     width: 100%;
     margin-top: 0.25rem;
     font-size: 1rem;
-    color: #dc3545;
+    background: #dc3545;
+    border-radius: 3px;
+    color: #000;
     font-weight: bold;
+    padding: 3px;
 }
 
 .invalid ~ .validation-message {
@@ -81,6 +84,12 @@ textarea.form-control.invalid {
 
 .form-check-input.invalid ~ .validation-message {
     display: block;
+}
+
+.alert-danger {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #000;
 }
 
 .grecaptcha-badge {
@@ -131,7 +140,17 @@ a {
     background: rgba(0, 0, 0, 0.4);
     box-shadow: 0px 0px 5px rgba(25, 211, 155, 0.575);
     padding: 40px;
-    border-radius: 3px;
+    border-radius: 10px;
+}
+
+.card-whitebg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    background-image: linear-gradient( 60deg, #29323c 0%, #485563 100%);
+    padding: 40px;
+    border-radius: 10px;
 }
 
 .card-header {
@@ -139,16 +158,26 @@ a {
     text-align: center;
     font-weight: bolder;
     font-size: 1.5rem;
+    background-color: rgba(0, 0, 0, 0);
+    border-bottom: none;
 }
 
 .alert {
     font-size: 1.5rem;
+    line-height: 1.5rem;
+    display: inline-flex;
+    width: 100%;
 }
 
 .close {
     color: #222222;
     text-decoration: none;
-    font-size: 1.5rem;
+    font-size: 3rem;
+    line-height: 1.5rem;
+}
+
+.close:hover {
+    color: #fff;
 }
 
 .form-group {

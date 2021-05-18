@@ -4,7 +4,7 @@
 @code {
     private readonly List<string> captchaLocations = new() { "/register", "/resendvalidationemail", "/login", "/validateemail", "/forgotpassword", "/resetpassword" };
 
-    private readonly List<string> transparentNavLocations = new() { "/", "/login" };
+    private readonly List<string> transparentNavLocations = new() { "/", "/login", "/register", "/forgotpassword" , "/resetpassword", "/resendvalidationemailx" };
 
     protected override async Task OnInitializedAsync()
     {
