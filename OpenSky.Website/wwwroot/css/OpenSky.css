@@ -47,9 +47,9 @@ p {
     color: white;
 }
 
-.brand h1 span {
-    color: #08c6a4;
-}
+    .brand h1 span {
+        color: #08c6a4;
+    }
 
 /* Login section */
 
@@ -73,14 +73,177 @@ p {
         z-index: -1;
     }
 
-.remember-me {
-    color: #bbb;
-    font-size: 14px;
-    align-items: center;
-    cursor: pointer;
-}
+    #login .alerts {
+        min-width: 450px;
+        max-width: 450px;
+    }
+
+    #login .remember-me {
+        color: #bbb;
+        font-size: 14px;
+        align-items: center;
+        cursor: pointer;
+    }
 
 /* End Login */
+
+/* Register section */
+
+#register {
+    background-image: url(/img/contrail.jpg);
+    background-size: cover;
+    background-position: top center;
+    position: relative;
+    z-index: 1;
+}
+
+    #register::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.5;
+        z-index: -1;
+    }
+
+    #register .alerts {
+        min-width: 450px;
+        max-width: 450px;
+    }
+
+/* End Register */
+
+/* Forgot password section */
+
+#forgotpassword {
+    background-image: url(/img/planewindow.jpg);
+    background-size: cover;
+    background-position: top center;
+    position: relative;
+    z-index: 1;
+}
+
+    #forgotpassword::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.5;
+        z-index: -1;
+    }
+
+    #forgotpassword .alerts {
+        min-width: 450px;
+        max-width: 450px;
+    }
+
+/* End Forgot password */
+
+/* Reset password section */
+
+#resetpassword {
+    background-image: url(/img/planewindow.jpg);
+    background-size: cover;
+    background-position: top center;
+    position: relative;
+    z-index: 1;
+}
+
+    #resetpassword::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.5;
+        z-index: -1;
+    }
+
+    #resetpassword .alerts {
+        min-width: 450px;
+        max-width: 450px;
+    }
+
+/* End Reset password */
+
+/* Resend validation email section */
+
+#resendvalidationemail {
+    background-image: url(/img/airport.jpg);
+    background-size: cover;
+    background-position: top center;
+    position: relative;
+    z-index: 1;
+}
+
+    #resendvalidationemail::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.7;
+        z-index: -1;
+    }
+
+    #resendvalidationemail .alerts {
+        min-width: 450px;
+        max-width: 450px;
+    }
+
+    #resendvalidationemail .card {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+/* End Resend validation email */
+
+/* Validate email section */
+
+#validateemail {
+    background-image: url(/img/airport.jpg);
+    background-size: cover;
+    background-position: top center;
+    position: relative;
+    z-index: 1;
+}
+
+    #validateemail::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.7;
+        z-index: -1;
+    }
+
+    #validateemail .alerts {
+        min-width: 450px;
+        max-width: 450px;
+    }
+
+    #validateemail p {
+        color: #fff;
+        font-size: 1.5rem;
+    }
+
+    #validateemail .card {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+/* End validate email */
 
 /* Home Section */
 #home {
@@ -163,76 +326,81 @@ p {
     background: #fff;
 }
 
-#About .About {
-    flex-direction: column;
-    text-align: center;
-    max-width: 1500px;
-    margin: 0 auto;
-    padding: 100px 0;
-}
-#About .section-title span{
-    color: #08c6a4;
-}
+    #About .About {
+        flex-direction: column;
+        text-align: center;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 100px 0;
+    }
 
-#About .About-top h1 {
-    font-size: 3.5rem;
-}
+    #About .section-title span {
+        color: #08c6a4;
+    }
 
-#About .About-bottom {
-    display: flex;
-    
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 50px;
-}
-#About .About-item {
-    flex-basis: 80%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    flex-direction: column ;
-    padding: 30px;
-    border-radius: 10px;
-    background-size: cover;
-    margin: 10px 5%;
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-}
-#About .About-item::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
-    opacity: 0.9;
-    z-index: -1;
-}
-#About .About-bottom .icon {
-    height: 80px;
-    width: 100%;
-    margin-bottom: 20px;
-    align-items: center;
-}
-#About .About-bottom .icon img {
-    height: 80px;
-    width: auto;
-}
+    #About .About-top h1 {
+        font-size: 3.5rem;
+    }
+
+    #About .About-bottom {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 50px;
+    }
+
+    #About .About-item {
+        flex-basis: 80%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        padding: 30px;
+        border-radius: 10px;
+        background-size: cover;
+        margin: 10px 5%;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+        #About .About-item::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+            opacity: 0.9;
+            z-index: -1;
+        }
+
+    #About .About-bottom .icon {
+        height: 80px;
+        width: 100%;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+
+        #About .About-bottom .icon img {
+            height: 80px;
+            width: auto;
+        }
 
 
-#About .About-item h2 {
-    font-size: 2rem;
-    color: white;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    width: 100%;
-}
-#About .About-item p {
-    color: white;
-    text-align: left;
-}
+    #About .About-item h2 {
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        width: 100%;
+    }
+
+    #About .About-item p {
+        color: white;
+        text-align: left;
+    }
 /* End About Section */
 
 
@@ -386,14 +554,14 @@ p {
 }
 
 
-.footer h2 {
-    color: white;
-    font-weight: 500;
-    font-size: 1.2rem;
-    letter-spacing: 0.1rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
+    .footer h2 {
+        color: white;
+        font-weight: 500;
+        font-size: 1.2rem;
+        letter-spacing: 0.1rem;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 
     .footer .social-icon {
         display: flex;
@@ -401,27 +569,27 @@ p {
         width: 100%;
         align-items: center;
         justify-content: center;
-}
+    }
 
-.footer .social-item {
-    height: 50px;
-    width: 50px;
-    margin: 0 5px;
-}
+    .footer .social-item {
+        height: 50px;
+        width: 50px;
+        margin: 0 5px;
+    }
 
-.footer .social-item img {
-    filter: grayscale(1);
-    transition: 0.3s ease filter;
-}
+        .footer .social-item img {
+            filter: grayscale(1);
+            transition: 0.3s ease filter;
+        }
 
-.footer .social-item:hover img {
-    filter: grayscale(0);
-}
+        .footer .social-item:hover img {
+            filter: grayscale(0);
+        }
 
-.footer p {
-    color: white;
-    font-size: 0.7rem;
-}
+    .footer p {
+        color: white;
+        font-size: 0.7rem;
+    }
 
 /* End Footer */
 
@@ -451,10 +619,9 @@ p {
             display: none;
         }
 
-        #About .About-bottom .About-item {
-            flex-basis: 22%;
-            margin: 1.5%;
-        }
-
+    #About .About-bottom .About-item {
+        flex-basis: 22%;
+        margin: 1.5%;
+    }
 }
 /* End  Media Query For Desktop */
