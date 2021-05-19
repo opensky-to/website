@@ -21,7 +21,7 @@
     [Parameter]
     public bool Fade { get; set; } = true;
 
-    private readonly List<Models.Alert> alerts = new List<Models.Alert>();
+    private readonly List<Models.Alert> alerts = new();
 
     protected override void OnInitialized()
     {
@@ -90,7 +90,7 @@
             alert.Fade = true;
 
             // Remove alert after faded out
-            await Task.Delay(250);
+            await Task.Delay(1000);
             alerts.Remove(alert);
         }
         else
@@ -106,7 +106,7 @@
     {
         if (alert == null) return null;
 
-        var classes = new List<string> { "alert", "alert-dismissable", "mt-4" };
+        var classes = new List<string> { "alert" };
 
         var alertTypeClass = new Dictionary<AlertType, string>
         {
@@ -120,7 +120,7 @@
 
         if (alert.Fade)
         {
-            classes.Add("fade");
+            classes.Add("alert-fade");
         }
 
         return string.Join(' ', classes);

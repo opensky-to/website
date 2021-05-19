@@ -87,11 +87,6 @@ p {
         z-index: -1;
     }
 
-    #login .alerts {
-        min-width: 450px;
-        max-width: 450px;
-    }
-
     #login .remember-me {
         color: #bbb;
         font-size: 14px;
@@ -123,11 +118,6 @@ p {
         z-index: -1;
     }
 
-    #register .alerts {
-        min-width: 450px;
-        max-width: 450px;
-    }
-
 /* End Register */
 
 /* Forgot password section */
@@ -150,11 +140,6 @@ p {
         background-color: black;
         opacity: 0.5;
         z-index: -1;
-    }
-
-    #forgotpassword .alerts {
-        min-width: 450px;
-        max-width: 450px;
     }
 
 /* End Forgot password */
@@ -181,12 +166,15 @@ p {
         z-index: -1;
     }
 
-    #resetpassword .alerts {
-        min-width: 450px;
-        max-width: 450px;
-    }
-
 /* End Reset password */
+
+/* Change password section */
+
+#changepassword {
+    background: #fff;
+}
+
+/* End Change password */
 
 /* Resend validation email section */
 
@@ -208,11 +196,6 @@ p {
         background-color: black;
         opacity: 0.7;
         z-index: -1;
-    }
-
-    #resendvalidationemail .alerts {
-        min-width: 450px;
-        max-width: 450px;
     }
 
     #resendvalidationemail .card {
@@ -247,11 +230,6 @@ p {
         background-color: black;
         opacity: 0.7;
         z-index: -1;
-    }
-
-    #validateemail .alerts {
-        min-width: 450px;
-        max-width: 450px;
     }
 
     #validateemail p {
