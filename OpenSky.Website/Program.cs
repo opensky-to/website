@@ -6,6 +6,7 @@
 
 namespace OpenSky.Website
 {
+    using System;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -52,7 +53,7 @@ namespace OpenSky.Website
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped<AlertService>();
             builder.Services.AddScoped<UserSessionService>();
-            builder.Services.AddScoped<HttpClient>();
+            builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<OpenSkyService>();
             builder.Services.AddScoped<IRouteTransitionInvoker, DefaultRouteTransitionInvoker>();
 

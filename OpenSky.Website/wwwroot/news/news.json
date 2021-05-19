@@ -1,0 +1,16 @@
+[
+  {
+    "h1": "Example News",
+    "h2": "It works!",
+    "p": "You can add your own news stories here",
+    "img": "day1.jpg",
+    "active": true
+  },
+  {
+    "h1": "template - edit me!",
+    "h2": "",
+    "p": "",
+    "img": "",
+    "active": false
+  }
+]

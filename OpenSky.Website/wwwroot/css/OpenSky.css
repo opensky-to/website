@@ -51,6 +51,20 @@ p {
         color: #08c6a4;
     }
 
+.section-title {
+    font-size: 4rem;
+    font-weight: 300;
+    color: black;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    text-align: center;
+}
+
+    .section-title span {
+        color: #08c6a4;
+    }
+
 /* Login section */
 
 #login {
@@ -205,6 +219,12 @@ p {
         background: rgba(0, 0, 0, 0.5);
     }
 
+    #resendvalidationemail p {
+        color: #fff;
+        font-size: 1.2rem;
+        line-height: 1.5rem;
+    }
+
 /* End Resend validation email */
 
 /* Validate email section */
@@ -322,11 +342,11 @@ p {
 /* End Home Section */
 
 /* About Section */
-#About {
+#about {
     background: #fff;
 }
 
-    #About .About {
+    #about .about {
         flex-direction: column;
         text-align: center;
         max-width: 1500px;
@@ -334,22 +354,22 @@ p {
         padding: 100px 0;
     }
 
-    #About .section-title span {
+    #about .section-title span {
         color: #08c6a4;
     }
 
-    #About .About-top h1 {
+    #about .about-top h1 {
         font-size: 3.5rem;
     }
 
-    #About .About-bottom {
+    #about .about-bottom {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
         margin-top: 50px;
     }
 
-    #About .About-item {
+    #about .about-item {
         flex-basis: 80%;
         display: flex;
         align-items: flex-start;
@@ -364,7 +384,7 @@ p {
         overflow: hidden;
     }
 
-        #About .About-item::after {
+        #about .about-item::after {
             content: '';
             position: absolute;
             left: 0;
@@ -376,20 +396,20 @@ p {
             z-index: -1;
         }
 
-    #About .About-bottom .icon {
+    #about .about-bottom .icon {
         height: 80px;
         width: 100%;
         margin-bottom: 20px;
         align-items: center;
     }
 
-        #About .About-bottom .icon img {
+        #about .about-bottom .icon img {
             height: 80px;
             width: auto;
         }
 
 
-    #About .About-item h2 {
+    #about .about-item h2 {
         font-size: 2rem;
         color: white;
         margin-bottom: 10px;
@@ -397,12 +417,104 @@ p {
         width: 100%;
     }
 
-    #About .About-item p {
+    #about .about-item p {
         color: white;
         text-align: left;
     }
 /* End About Section */
 
+/* News Section */
+
+#news {
+    background: #fff;
+}
+
+
+    #news .news {
+        flex-direction: column;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 100px 0;
+    }
+
+    #news .news-header h1 {
+        margin-bottom: 50px;
+    }
+
+    #news .all-news {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    #news .news-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 80%;
+        margin: 20px auto;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    #news .news-info {
+        padding: 30px;
+        flex-basis: 50%;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+        color: white;
+    }
+
+        #news .news-info h1 {
+            font-size: 3rem;
+            font-weight: 500;
+        }
+
+        #news .news-info h2 {
+            font-size: 1.7rem;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        #news .news-info p {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.8rem;
+        }
+
+    #news .news-img {
+        flex-basis: 50%;
+        height: 300px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        #news .news-img:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+            opacity: 0.7;
+        }
+
+        #news .news-img img {
+            transition: 0.3s ease transform;
+        }
+
+    #news .news-item:hover .news-img img {
+        transform: scale(1.1);
+    }
+
+/* End News */
 
 /* Keyframes */
 @keyframes navbar_toggler_puls {
@@ -619,9 +731,32 @@ p {
             display: none;
         }
 
-    #About .About-bottom .About-item {
+    #about .about-bottom .about-item {
         flex-basis: 22%;
         margin: 1.5%;
+    }
+
+    #news .news-item {
+        flex-direction: row;
+    }
+
+        #news .news-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+    #news .news-item {
+        height: 400px;
+        margin: 0;
+        width: 100%;
+        border-radius: 0;
+    }
+
+    #news .all-news .news-info {
+        height: 100%;
+    }
+
+    #news .all-news .news-img {
+        height: 100%;
     }
 }
 /* End  Media Query For Desktop */
