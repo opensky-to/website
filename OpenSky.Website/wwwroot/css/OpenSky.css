@@ -54,7 +54,7 @@ p {
 /* Login section */
 
 #login {
-    background-image: url(/img/takeoff.png);
+    background-image: url(/img/backgrounds/takeoff.png);
     background-size: cover;
     background-position: top center;
     position: relative;
@@ -90,7 +90,7 @@ p {
 /* Register section */
 
 #register {
-    background-image: url(/img/contrail.jpg);
+    background-image: url(/img/backgrounds/contrail.jpg);
     background-size: cover;
     background-position: top center;
     position: relative;
@@ -119,7 +119,7 @@ p {
 /* Forgot password section */
 
 #forgotpassword {
-    background-image: url(/img/planewindow.jpg);
+    background-image: url(/img/backgrounds/planewindow.jpg);
     background-size: cover;
     background-position: top center;
     position: relative;
@@ -148,7 +148,7 @@ p {
 /* Reset password section */
 
 #resetpassword {
-    background-image: url(/img/planewindow.jpg);
+    background-image: url(/img/backgrounds/planewindow.jpg);
     background-size: cover;
     background-position: top center;
     position: relative;
@@ -177,7 +177,7 @@ p {
 /* Resend validation email section */
 
 #resendvalidationemail {
-    background-image: url(/img/airport.jpg);
+    background-image: url(/img/backgrounds/airport.jpg);
     background-size: cover;
     background-position: top center;
     position: relative;
@@ -210,7 +210,7 @@ p {
 /* Validate email section */
 
 #validateemail {
-    background-image: url(/img/airport.jpg);
+    background-image: url(/img/backgrounds/airport.jpg);
     background-size: cover;
     background-position: top center;
     position: relative;
@@ -247,7 +247,7 @@ p {
 
 /* Home Section */
 #home {
-    background-image: url(/img/3motor.jpg);
+    background-image: url(/img/backgrounds/3motor.jpg);
     background-size: cover;
     background-position: top center;
     position: relative;
