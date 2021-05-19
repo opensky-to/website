@@ -1,7 +1,56 @@
 ﻿@page "/news"
+@using OpenSky.Website.Models
+@inject AlertService alertService
+@inject HttpClient http
 
-<div class="container">
-    Hi there news
-</div>
+<section id="news">
+    <div class="news container">
+        <div class="news-header">
+            <h1 class="section-title"><span>News</span></h1>
+        </div>
+        <Alert />
+
+        <div class="all-news">
+            @foreach (var newsItem in newsItems.Where(n => n.Active))
+            {
+                <div class="news-item">
+                    <div class="news-info">
+                        <h1>@newsItem.H1</h1>
+                        <h2>@newsItem.H2</h2>
+                        <p>@newsItem.P</p>
+                    </div>
+                    <div class="news-img">
+                        <img src="/news/img/@newsItem.Img" alt="news img">
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
 
 <PageFooter />
+
+@code
+{
+    private readonly List<NewsItem> newsItems = new List<NewsItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        alertService.Clear();
+        try
+        {
+            var newsFromFile = await http.GetFromJsonAsync<NewsItem[]>("news/news.json");
+            if (newsFromFile != null)
+            {
+                newsItems.AddRange(newsFromFile);
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+}

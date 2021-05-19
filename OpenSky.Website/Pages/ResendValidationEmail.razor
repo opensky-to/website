@@ -16,11 +16,12 @@
                 <img src="img/sendemail.svg" alt="id card login" style="width: 50%;" />
                 <h4 class="card-header">Resend Validation Email</h4>
                 <div class="card-body" style="width: 100%">
+                    <p>Please make sure you also check your spam folder. Emails will be sent from @configuration["OpenSky:EmailAddress"]</p>
                     <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-                        <DataAnnotationsValidator />
+                        <DataAnnotationsValidator/>
                         <div class="form-group">
-                            <InputText @bind-Value="model.Email" class="form-control" placeHolder="Email address" />
-                            <ValidationMessage For="@(() => model.Email)" />
+                            <InputText @bind-Value="model.Email" class="form-control" placeHolder="Email address"/>
+                            <ValidationMessage For="@(() => model.Email)"/>
                         </div>
                         <button disabled="@loading" class="btn btn-primary" style="width: 100%">
                             @if (loading)
