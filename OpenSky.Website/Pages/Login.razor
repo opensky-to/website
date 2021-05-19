@@ -9,46 +9,43 @@
 
 <section id="login">
     <div class="container">
-        <div style="flex-direction: column">
-            <Alert />
-            <div class="card" style="width: 450px; align-items: center;">
-                <img src="img/idcard.svg" alt="id card login" style="width: 50%;" />
-                <h4 class="card-header">
-                    Login to OPEN<span style="color: #08c6a4;">SKY</span>
-                </h4>
-                <div class="card-body" style="width: 100%">
-                    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-                        <DataAnnotationsValidator />
-                        <div class="form-group">
-                            <InputText @bind-Value="model.Username" class="form-control" placeHolder="Username" />
-                            <ValidationMessage For="@(() => model.Username)" />
+        <div class="card" style="width: 450px; align-items: center;">
+            <img src="img/idcard.png" alt="id card login" style="width: 50%;" />
+            <h4 class="card-header">
+                Login to OPEN<span style="color: #08c6a4;">SKY</span>
+            </h4>
+            <div class="card-body" style="width: 100%">
+                <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <InputText @bind-Value="model.Username" class="form-control" placeHolder="Username" />
+                        <ValidationMessage For="@(() => model.Username)" />
+                    </div>
+                    <div class="form-group">
+                        <InputText @bind-Value="model.Password" type="password" class="form-control" placeHolder="Password" />
+                        <ValidationMessage For="@(() => model.Password)" />
+                    </div>
+                    <div class="form-group" style="padding-bottom: 30px;">
+                        <div class="custom-checkbox">
+                            <InputCheckbox @bind-Value="rememberMe" id="rememberMeCheck"></InputCheckbox>
+                            <label class="remember-me" for="rememberMeCheck" style="float: left;">Remember me</label>
                         </div>
-                        <div class="form-group">
-                            <InputText @bind-Value="model.Password" type="password" class="form-control" placeHolder="Password" />
-                            <ValidationMessage For="@(() => model.Password)" />
-                        </div>
-                        <div class="form-group" style="padding-bottom: 30px;">
-                            <div class="custom-checkbox">
-                                <InputCheckbox @bind-Value="rememberMe" id="rememberMeCheck"></InputCheckbox>
-                                <label class="remember-me" for="rememberMeCheck" style="float: left;">Remember me</label>
-                            </div>
-                            
-                            <NavLink href="forgotpassword" style="float: right;">Forgot your password?</NavLink>
-                        </div>
-                        <button disabled="@loading" class="btn btn-primary" style="width: 100%">
-                            @if (loading)
-                            {
-                                <span class="spinner-border spinner-border-sm"></span>
-                            }
-                            Login
-                        </button>
-                        <div style="margin-top: 30px; text-align: center; width: 100%; color: #bbb;">
-                            Not registered? <NavLink href="register">Create an Account</NavLink>
-                            <br />
-                            Validation email didn't arrive? <NavLink href="resendvalidationemail">Send it again</NavLink>
-                        </div>
-                    </EditForm>
-                </div>
+
+                        <NavLink href="forgotpassword" style="float: right;">Forgot your password?</NavLink>
+                    </div>
+                    <button disabled="@loading" class="btn btn-primary" style="width: 100%">
+                        @if (loading)
+                        {
+                            <span class="spinner-border spinner-border-sm"></span>
+                        }
+                        Login
+                    </button>
+                    <div style="margin-top: 30px; text-align: center; width: 100%; color: #bbb;">
+                        Not registered? <NavLink href="register">Create an Account</NavLink>
+                        <br />
+                        Validation email didn't arrive? <NavLink href="resendvalidationemail">Send it again</NavLink>
+                    </div>
+                </EditForm>
             </div>
         </div>
     </div>
@@ -76,12 +73,16 @@
             if (response.IsError)
             {
                 alertService.Error(response.Message);
+                alertService.Warn("test", true, false);
+                alertService.Info("test", true, false);
+                alertService.Success("test", true, false);
                 model.Password = string.Empty;
                 loading = false;
                 StateHasChanged();
             }
             else
             {
+                alertService.Success(response.Message, true);
                 await userSession.LoggedIn(response.Data);
                 var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
                 navigationManager.NavigateTo(returnUrl);
@@ -98,7 +99,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            alertService.Error(errorMessage);
                         }
                     }
 

@@ -1,9 +1,12 @@
 ﻿@inherits LayoutComponentBase
 
-<div >
+<div>
     <main role="main">
         <NavMenu />
-        @Body
+        <div style="flex-direction: column">
+            <Alert Fade="true" />
+            @Body
+        </div>
     </main>
 </div>
 

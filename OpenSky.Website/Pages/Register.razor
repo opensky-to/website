@@ -8,101 +8,90 @@
 @inject IJSRuntime jsRuntime
 @inject IConfiguration configuration
 
-    <section id="register">
-        <div class="container">
-            <div style="flex-direction: column">
-                <Alert />
-                <div class="card" style="width: 450px; align-items: center;">
-                    <img src="img/rocketstart.svg" alt="id card login" style="width: 50%;" />
-                    <h4 class="card-header">
-                        Register a new OPEN<span style="color: #08c6a4;">SKY</span> account
-                    </h4>
-                    <div class="card-body" style="width: 100%">
-                        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-                            <DataAnnotationsValidator />
-                            <div class="form-group">
-                                <InputText @bind-Value="model.Username" class="form-control" placeHolder="Username" />
-                                <ValidationMessage For="@(() => model.Username)" />
-                            </div>
-                            <div class="form-group">
-                                <InputText @bind-Value="model.Email" class="form-control" placeHolder="Email address" />
-                                <ValidationMessage For="@(() => model.Email)" />
-                            </div>
-                            <div class="form-group">
-                                <InputText @bind-Value="model.Password" type="password" class="form-control" placeHolder="Password" />
-                                <ValidationMessage For="@(() => model.Password)" />
-                            </div>
-                            <button disabled="@loading" class="btn btn-primary" style="width: 100%">
-                                @if (loading)
-                                {
-                                    <span class="spinner-border spinner-border-sm"></span>
-                                }
-                                Register
-                            </button>
-                        </EditForm>
+<section id="register">
+    <div class="container">
+        <div class="card" style="width: 450px; align-items: center;">
+            <img src="img/rocketstart.png" alt="id card login" style="width: 50%;" />
+            <h4 class="card-header">
+                Register a new OPEN<span style="color: #08c6a4;">SKY</span> account
+            </h4>
+            <div class="card-body" style="width: 100%">
+                <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <InputText @bind-Value="model.Username" class="form-control" placeHolder="Username" />
+                        <ValidationMessage For="@(() => model.Username)" />
                     </div>
-                </div>
+                    <div class="form-group">
+                        <InputText @bind-Value="model.Email" class="form-control" placeHolder="Email address" />
+                        <ValidationMessage For="@(() => model.Email)" />
+                    </div>
+                    <div class="form-group">
+                        <InputText @bind-Value="model.Password" type="password" class="form-control" placeHolder="Password" />
+                        <ValidationMessage For="@(() => model.Password)" />
+                    </div>
+                    <button disabled="@loading" class="btn btn-primary" style="width: 100%">
+                        @if (loading)
+                        {
+                            <span class="spinner-border spinner-border-sm"></span>
+                        }
+                        Register
+                    </button>
+                </EditForm>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <PageFooter />
+<PageFooter />
 
-    @code
+@code
 {
-        private readonly RegisterUser model = new();
-        private bool loading;
+    private readonly RegisterUser model = new();
+    private bool loading;
 
-        private async void OnValidSubmit()
+    private async void OnValidSubmit()
+    {
+        alertService.Clear();
+        loading = true;
+        try
         {
-            alertService.Clear();
-            loading = true;
-            try
-            {
-                // Before we post the model to the API add the reCAPTCHA token
-                var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "register");
-                model.RecaptchaToken = captchaToken;
+            // Before we post the model to the API add the reCAPTCHA token
+            var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "register");
+            model.RecaptchaToken = captchaToken;
 
-                var response = await openSky.RegisterAsync(model);
-                if (response.IsError)
+            var response = await openSky.RegisterAsync(model);
+            if (response.IsError)
+            {
+                alertService.Error(response.Message, false, false);
+                model.Password = string.Empty;
+                loading = false;
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true, false);
+                navigationManager.NavigateTo("login");
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
                 {
-                    alertService.Error(response.Message, false, false);
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
                     model.Password = string.Empty;
                     loading = false;
                     StateHasChanged();
-                }
-                else
-                {
-                    alertService.Success(response.Message, true, false);
-                    navigationManager.NavigateTo("login");
-                }
-            }
-            catch (ApiException ex)
-            {
-                if (!string.IsNullOrEmpty(ex.Response))
-                {
-                    var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
-                    if (problemDetails != null)
-                    {
-                        foreach (var problemDetailsError in problemDetails.Errors)
-                        {
-                            foreach (var errorMessage in problemDetailsError.Value)
-                            {
-                                alertService.Error(errorMessage, false, false);
-                            }
-                        }
-
-                        model.Password = string.Empty;
-                        loading = false;
-                        StateHasChanged();
-                    }
-                    else
-                    {
-                        alertService.Error(ex.Message, false, false);
-                        model.Password = string.Empty;
-                        loading = false;
-                        StateHasChanged();
-                    }
                 }
                 else
                 {
@@ -112,7 +101,7 @@
                     StateHasChanged();
                 }
             }
-            catch (Exception ex)
+            else
             {
                 alertService.Error(ex.Message, false, false);
                 model.Password = string.Empty;
@@ -120,4 +109,12 @@
                 StateHasChanged();
             }
         }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            model.Password = string.Empty;
+            loading = false;
+            StateHasChanged();
+        }
     }
+}

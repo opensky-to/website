@@ -19,6 +19,76 @@
         top: 0.5rem;
     }
 
+.alerts {
+    position: absolute;
+    top: 81px;
+    z-index: 99;
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.alert {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    display: inline-flex;
+    width: 100%;
+    margin-bottom: 2px;
+    animation: alertFadeIn 1s ease forwards;
+    opacity: 0;
+}
+
+@keyframes alertFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-60px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-fade {
+    animation: alertFadeOut 1s ease forwards;
+}
+
+@keyframes alertFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-60px);
+    }
+}
+
+.alert-danger {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #000;
+}
+
+.alert-success {
+    background: #08c6a4;
+    border-color: #08c6a4;
+    color: #fff;
+}
+
+.alert-info {
+    background: #305199;
+    border-color: #305199;
+    color: #fff;
+}
+
+.alert-warning {
+    background: #eb6900;
+    border-color: #eb6900;
+    color: #000;
+}
+
 a.navbar-brand {
     white-space: normal;
     text-align: center;
@@ -86,12 +156,6 @@ textarea.form-control.invalid {
     display: block;
 }
 
-.alert-danger {
-    background: #dc3545;
-    border-color: #dc3545;
-    color: #000;
-}
-
 .grecaptcha-badge {
     visibility: hidden;
     z-index: 99;
@@ -130,6 +194,7 @@ textarea.form-control.invalid {
 a {
     color: #08c6a4;
     text-decoration: none;
+    font-weight: 500;
 }
 
     a:hover {
@@ -160,13 +225,6 @@ a {
     font-size: 1.5rem;
     background-color: rgba(0, 0, 0, 0);
     border-bottom: none;
-}
-
-.alert {
-    font-size: 1.5rem;
-    line-height: 1.5rem;
-    display: inline-flex;
-    width: 100%;
 }
 
 .close {
@@ -260,8 +318,8 @@ a {
         [type="checkbox"]:checked + label:after {
             content: '🗙';
             position: absolute;
-            left: -.1em;
-            top: .34em;
+            left: -.14em;
+            top: .31em;
             font-size: 25px;
             font-weight: 900;
             color: #08c6a4;
