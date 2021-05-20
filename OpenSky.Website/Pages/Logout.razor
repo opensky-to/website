@@ -7,7 +7,7 @@
     protected override async Task OnInitializedAsync()
     {
         await userSession.Logout();
-        alertService.Success("Logged out successfully!", true);
+        alertService.Success("Logged out successfully.", true);
         navigationManager.NavigateTo("");
     }
 }

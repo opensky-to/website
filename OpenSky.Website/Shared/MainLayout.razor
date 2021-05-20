@@ -1,14 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
-<header>
-    <NavMenu />
-</header>
-
-<div class="container">
-    <main role="main" class="pb-3">
-        <Alert />
-        @Body
+<div>
+    <main role="main">
+        <NavMenu />
+        <div style="flex-direction: column">
+            <Alert Fade="true" />
+            @Body
+        </div>
     </main>
 </div>
 
-<CaptchaBadgeLocations />
+<LocationSpecifics />

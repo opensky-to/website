@@ -339,3 +339,6 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
+# OpenSky specific
+/OpenSky.Website/wwwroot/news/img/*.jpg
+/OpenSky.Website/wwwroot/news/img/*.png

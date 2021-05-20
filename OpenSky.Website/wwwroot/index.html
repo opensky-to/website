@@ -7,12 +7,41 @@
     <title>OpenSky</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
+    <link href="css/Blazor.css" rel="stylesheet" />
+    <link href="css/OpenSky.css" rel="stylesheet" />
     <link href="OpenSky.Website.styles.css" rel="stylesheet" />
+    <script src="_content/BlazorTransitionableRoute/jsInterop.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div style="position:absolute; width:100%; height: 100%; text-align: center; background: #333333; align-items: center; display: flex; flex-direction: column; justify-content: center;">
+            <p style="font-size: 3rem; color: white; font-family: Montserrat, sans-serif; text-align: center;">OPEN<span style="color: #08c6a4;">SKY</span></p>
+            <div class="loader">
+                <span style="--i:1;"></span>
+                <span style="--i:2;"></span>
+                <span style="--i:3;"></span>
+                <span style="--i:4;"></span>
+                <span style="--i:5;"></span>
+                <span style="--i:6;"></span>
+                <span style="--i:7;"></span>
+                <span style="--i:8;"></span>
+                <span style="--i:9;"></span>
+                <span style="--i:10;"></span>
+                <span style="--i:11;"></span>
+                <span style="--i:12;"></span>
+                <span style="--i:13;"></span>
+                <span style="--i:14;"></span>
+                <span style="--i:15;"></span>
+                <span style="--i:16;"></span>
+                <span style="--i:17;"></span>
+                <span style="--i:18;"></span>
+                <span style="--i:19;"></span>
+                <span style="--i:20;"></span>
+            </div>
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -32,7 +61,7 @@
             });
         };
 
-        showCaptchaBadge = function() {
+        showCaptchaBadge = function () {
             var badges = document.getElementsByClassName('grecaptcha-badge');
             for (var i = 0; i < badges.length; i++) {
                 badges[i].style.visibility = "visible";
@@ -45,6 +74,36 @@
                 badges[i].style.visibility = "hidden";
             }
         };
+
+        makeNavbarTransparent = function () {
+            const header = document.querySelector('.navbar');
+            header.style.backgroundColor = 'transparent';
+        };
+
+        makeNavbarOpaque = function () {
+            const header = document.querySelector('.navbar');
+            header.style.backgroundColor = '#29323c';
+        };
+
+
+        configureNavBar = function () {
+            //const hamburger = document.querySelector('.header .nav-bar .nav-list .hamburger');
+            //const mobile_menu = document.querySelector('.header .nav-bar .nav-list ul');
+            //const menu_item = document.querySelectorAll('.header .nav-bar .nav-list ul li a');
+
+            //hamburger.addEventListener('click', () => {
+            //    hamburger.classList.toggle('active');
+            //    mobile_menu.classList.toggle('active');
+            //});
+
+            //menu_item.forEach((item) => {
+            //    item.addEventListener('click', () => {
+            //        hamburger.classList.toggle('active');
+            //        mobile_menu.classList.toggle('active');
+            //    });
+            //});
+        };
+
     </script>
 </body>
 

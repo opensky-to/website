@@ -1,11 +1,14 @@
 ﻿@page "/"
-@inject UserSessionService userSession
 
-<h1>OpenSky</h1>
-<p>A brand new airline manager experience!</p>
-<p>Coming Soon!</p>
+<section id="home">
+    <div class="home container">
+        <div>
+            <h1>OpenSKY, <span></span></h1>
+            <h1>A brand new airline manager experience!<span></span></h1>
+            <h1>Coming Soon!<span></span></h1>
+            <NavLink class="btn btn-primary" href="about">Read more</NavLink>
+        </div>
+    </div>
+</section>
 
-@if (userSession.IsUserLoggedIn)
-{
-    <p>Hi, @userSession.Username</p>
-}
+<PageFooter />
