@@ -1,0 +1,1 @@
+﻿Place news images into this folder and reference them from news.json - filename only, folder gets added automatically!
