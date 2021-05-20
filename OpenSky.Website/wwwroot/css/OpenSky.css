@@ -656,7 +656,7 @@ p {
             background: #08c6a4;
             border-radius: 50%;
             transform: scale(0);
-            animation: animate 0.5s linear infinite;
+            animation: animate 0.7s linear infinite;
             animation-delay: calc(0.01s*var(--i));
         }
 
