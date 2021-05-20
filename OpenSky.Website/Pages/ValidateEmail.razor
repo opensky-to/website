@@ -2,23 +2,55 @@
 @using Microsoft.AspNetCore.WebUtilities
 @inject OpenSkyService openSky
 @inject NavigationManager navigationManager
-@inject AlertService alertService
 @inject IJSRuntime jsRuntime
 
-@if (loading)
-{
-    <div class="card">
-        <h4 class="card-header">Validate email</h4>
-        <div class="card-body">
-            <p><span class="spinner-border spinner-border-sm mr-1"></span> Please wait while we verify your email address against your account record...</p>
-        </div>
+<section id="validateemail">
+    <div class="container">
+        @if (showInfo)
+        {
+            <div class="card" style="width: 450px; align-items: center;">
+                <img src="img/processing.png" alt="id card login" style="width: 50%;" />
+                <h4 class="card-header">Validating email address</h4>
+                <div class="card-body" style="width: 100%">
+                    <p>
+                        <span class="spinner-border spinner-border-sm"></span>
+                        Please wait while we verify your email address against your account record...
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (success)
+        {
+            <div class="card" style="width: 450px; align-items: center;">
+                <img src="img/welcomehooray.png" alt="id card login" style="width: 50%;" />
+                <h4 class="card-header">Welcome to OPEN<span style="color: #08c6a4;">SKY</span></h4>
+                <div class="card-body" style="width: 100%">
+                    <p>@replyMessage</p>
+                </div>
+            </div>
+        }
+
+        @if (error)
+        {
+            <div class="card" style="width: 450px; align-items: center;">
+                <img src="img/slipbanana.png" alt="id card login" style="width: 50%;" />
+                <h4 class="card-header">Oh oh, that didn't work!</h4>
+                <div class="card-body" style="width: 100%">
+                    <p>@replyMessage</p>
+                </div>
+            </div>
+        }
     </div>
-}
+</section>
 
 @code
 {
     private readonly OpenSkyApi.ValidateEmail model = new();
-    private bool loading = true;
+    private bool showInfo = true;
+    private bool success;
+    private bool error;
+    private string replyMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,30 +70,38 @@
 
     private async Task ValidateEmailAddress()
     {
-        alertService.Clear();
         try
         {
+            await Task.Delay(1000);
+
             // Before we post the model to the API add the reCAPTCHA token
             var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "validateEmail");
             model.RecaptchaToken = captchaToken;
 
             var response = await openSky.ValidateEmailAsync(model);
-            loading = false;
             if (response.IsError)
             {
-                alertService.Error(response.Message, false, false);
+                showInfo = true;
+                error = true;
+                replyMessage = response.Message;
                 StateHasChanged();
             }
             else
             {
-                alertService.Success(response.Message, true, false);
+                replyMessage = response.Message;
+                showInfo = false;
+                success = true;
+                StateHasChanged();
+
+                await Task.Delay(10 * 1000);
                 navigationManager.NavigateTo("/login");
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
-            loading = false;
+            replyMessage = ex.Message;
+            showInfo = false;
+            error = true;
             StateHasChanged();
         }
     }
