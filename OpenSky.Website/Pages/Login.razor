@@ -73,9 +73,6 @@
             if (response.IsError)
             {
                 alertService.Error(response.Message);
-                alertService.Warn("test", true, false);
-                alertService.Info("test", true, false);
-                alertService.Success("test", true, false);
                 model.Password = string.Empty;
                 loading = false;
                 StateHasChanged();
