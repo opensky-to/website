@@ -13,7 +13,7 @@ html {
 }
 
 body {
-    font-size: 14px;
+    font-size: 12px;
     font-family: 'Montserrat', sans-serif;
     background: #171a1d;
 }
@@ -89,9 +89,20 @@ p {
 
     #login .remember-me {
         color: #bbb;
-        font-size: 14px;
         align-items: center;
         cursor: pointer;
+    }
+
+    #login .forgotPassword {
+        float: left;
+        margin-bottom: 10px;
+    }
+
+    #login .bottomLinks {
+        margin-top: 10px;
+        text-align: center;
+        width: 100%;
+        color: #bbb;
     }
 
 /* End Login */
@@ -274,7 +285,7 @@ p {
     #home h1 {
         display: block;
         width: fit-content;
-        font-size: 4rem;
+        font-size: 3rem;
         position: relative;
         color: transparent;
         animation: text_reveal 0.5s ease forwards;
@@ -723,6 +734,10 @@ p {
 
 /* Media Query For Desktop */
 @media only screen and (min-width: 1200px) {
+    body {
+        font-size: 14px;
+    }
+
     .navbar-toggler {
         display: none;
     }
@@ -746,6 +761,11 @@ p {
         #header .navbar-collapse ul a:after {
             display: none;
         }
+
+    #home h1 {
+        font-size: 4rem;
+        position: relative;
+    }
 
     #about .about-bottom .about-item {
         flex-basis: 22%;
@@ -784,5 +804,14 @@ p {
     #news .all-news .news-img {
         height: 100%;
     }
+
+    #login .forgotPassword {
+        float: right;
+    }
+
+    #login .bottomLinks {
+        margin-top: 30px;
+    }
+
 }
 /* End  Media Query For Desktop */
