@@ -340,5 +340,5 @@ ASALocalRun/
 healthchecksdb
 
 # OpenSky specific
-/OpenSky.Website/wwwroot/news/img/*.jpg
-/OpenSky.Website/wwwroot/news/img/*.png
+/OpenSky.Website/wwwroot/newssource/img/*.jpg
+/OpenSky.Website/wwwroot/newssource/img/*.png
