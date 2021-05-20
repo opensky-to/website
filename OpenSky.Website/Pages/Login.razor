@@ -9,12 +9,12 @@
 
 <section id="login">
     <div class="container">
-        <div class="card" style="width: 450px; align-items: center;">
+        <div class="card">
             <img src="img/idcard.png" alt="id card login" style="width: 50%;" />
             <h4 class="card-header">
                 Login to OPEN<span style="color: #08c6a4;">SKY</span>
             </h4>
-            <div class="card-body" style="width: 100%">
+            <div class="card-body">
                 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
                     <DataAnnotationsValidator />
                     <div class="form-group">
@@ -31,7 +31,7 @@
                             <label class="remember-me" for="rememberMeCheck" style="float: left;">Remember me</label>
                         </div>
 
-                        <NavLink href="forgotpassword" style="float: right;">Forgot your password?</NavLink>
+                        <NavLink href="forgotpassword" class="forgotPassword">Forgot your password?</NavLink>
                     </div>
                     <button disabled="@loading" class="btn btn-primary" style="width: 100%">
                         @if (loading)
@@ -40,7 +40,7 @@
                         }
                         Login
                     </button>
-                    <div style="margin-top: 30px; text-align: center; width: 100%; color: #bbb;">
+                    <div class="bottomLinks">
                         Not registered? <NavLink href="register">Create an Account</NavLink>
                         <br />
                         Validation email didn't arrive? <NavLink href="resendvalidationemail">Send it again</NavLink>

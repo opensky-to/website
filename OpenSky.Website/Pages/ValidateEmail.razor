@@ -8,10 +8,10 @@
     <div class="container">
         @if (showInfo)
         {
-            <div class="card" style="width: 450px; align-items: center;">
+            <div class="card">
                 <img src="img/processing.png" alt="id card login" style="width: 50%;" />
                 <h4 class="card-header">Validating email address</h4>
-                <div class="card-body" style="width: 100%">
+                <div class="card-body">
                     <p>
                         <span class="spinner-border spinner-border-sm"></span>
                         Please wait while we verify your email address against your account record...
@@ -22,10 +22,10 @@
 
         @if (success)
         {
-            <div class="card" style="width: 450px; align-items: center;">
+            <div class="card">
                 <img src="img/welcomehooray.png" alt="id card login" style="width: 50%;" />
                 <h4 class="card-header">Welcome to OPEN<span style="color: #08c6a4;">SKY</span></h4>
-                <div class="card-body" style="width: 100%">
+                <div class="card-body">
                     <p>@replyMessage</p>
                 </div>
             </div>
@@ -33,16 +33,18 @@
 
         @if (error)
         {
-            <div class="card" style="width: 450px; align-items: center;">
+            <div class="card">
                 <img src="img/slipbanana.png" alt="id card login" style="width: 50%;" />
                 <h4 class="card-header">Oh oh, that didn't work!</h4>
-                <div class="card-body" style="width: 100%">
+                <div class="card-body">
                     <p>@replyMessage</p>
                 </div>
             </div>
         }
     </div>
 </section>
+
+<PageFooter />
 
 @code
 {
