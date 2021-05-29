@@ -445,6 +445,48 @@
         }
       }
     },
+    "/DataImport/status": {
+      "get": {
+        "tags": [
+          "DataImport"
+        ],
+        "summary": "Get data import status.",
+        "description": "sushi.at, 12/05/2021.",
+        "parameters": [
+          {
+            "name": "importID",
+            "in": "query",
+            "description": "Identifier for the import.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportStatusApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportStatusApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportStatusApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/DataImport/littleNavmapMSFS": {
       "post": {
         "tags": [
@@ -478,17 +520,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/GuidNullableApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/GuidNullableApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/GuidNullableApiResponse"
                 }
               }
             }
@@ -501,6 +543,7 @@
     "schemas": {
       "Airport": {
         "required": [
+          "hashCode",
           "icao",
           "longestRunwaySurface",
           "name"
@@ -538,6 +581,10 @@
           "hasAvGas": {
             "type": "boolean",
             "description": "Gets or sets a value indicating whether the airport has AV gas for refueling."
+          },
+          "hashCode": {
+            "type": "string",
+            "description": "Gets or sets the hash code (SHA1 over all data columns to detect if record needs updating)."
           },
           "hasJetFuel": {
             "type": "boolean",
@@ -584,7 +631,7 @@
             "type": "string",
             "description": "Gets or sets the name."
           },
-          "runways": {
+          "runwayCount": {
             "type": "integer",
             "description": "Gets or sets the number of runways.",
             "format": "int32"
@@ -624,6 +671,104 @@
         "additionalProperties": false,
         "description": "Change password model."
       },
+      "DataImportElement": {
+        "type": "object",
+        "properties": {
+          "new": {
+            "type": "integer",
+            "description": "Gets or sets the number of new records inserted.",
+            "format": "int32"
+          },
+          "percentDone": {
+            "type": "integer",
+            "description": "Gets the percent done.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "processed": {
+            "type": "integer",
+            "description": "Gets or sets the number of records processed.",
+            "format": "int32"
+          },
+          "skipped": {
+            "type": "integer",
+            "description": "Gets or sets the number of skipped records.",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Gets or sets the total number of records to be processed.",
+            "format": "int32"
+          },
+          "updated": {
+            "type": "integer",
+            "description": "Gets or sets the number of updated records.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Data import element model."
+      },
+      "DataImportStatus": {
+        "type": "object",
+        "properties": {
+          "elements": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DataImportElement"
+            },
+            "description": "Gets or sets the elements.",
+            "nullable": true
+          },
+          "percentDone": {
+            "type": "integer",
+            "description": "Gets the percent done.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "processed": {
+            "type": "integer",
+            "description": "Gets or sets the number of records processed.",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Gets or sets the total number of records to be processed.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Data import status model."
+      },
+      "DataImportStatusApiResponse": {
+        "type": "object",
+        "properties": {
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/DataImportStatus"
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
       "ForgotPassword": {
         "required": [
           "email"
@@ -644,6 +789,38 @@
         "additionalProperties": false,
         "description": "Forgot password model."
       },
+      "GuidNullableApiResponse": {
+        "type": "object",
+        "properties": {
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          },
+          "data": {
+            "type": "string",
+            "description": "Gets or sets the embedded data of type T.",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
       "Login": {
         "required": [
           "password",
@@ -659,6 +836,10 @@
             "type": "string",
             "description": "Gets or sets the recaptcha token.",
             "nullable": true
+          },
+          "rememberMe": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether to remember the user login (extends JWT token expiry)."
           },
           "username": {
             "type": "string",
@@ -676,6 +857,16 @@
             "description": "Gets or sets the Date/Time of the expiration.",
             "format": "date-time"
           },
+          "refreshToken": {
+            "type": "string",
+            "description": "Gets or sets the refresh token.",
+            "nullable": true
+          },
+          "refreshTokenExpiration": {
+            "type": "string",
+            "description": "Gets or sets the Date/Time of the refresh token expiration.",
+            "format": "date-time"
+          },
           "token": {
             "type": "string",
             "description": "Gets or sets the token.",
@@ -683,7 +874,7 @@
           },
           "username": {
             "type": "string",
-            "description": "Gets or sets the username.",
+            "description": "Gets or sets the username (in case the user logged in with the email address).",
             "nullable": true
           }
         },

@@ -1,4 +1,4 @@
-﻿@page "/login"
+﻿@page "/login/{ReturnUrl?}"
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
 @inject OpenSkyService openSky
@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group" style="padding-bottom: 30px;">
                         <div class="custom-checkbox">
-                            <InputCheckbox @bind-Value="rememberMe" id="rememberMeCheck"></InputCheckbox>
+                            <InputCheckbox @bind-Value="model.RememberMe" id="rememberMeCheck"></InputCheckbox>
                             <label class="remember-me" for="rememberMeCheck" style="float: left;">Remember me</label>
                         </div>
 
@@ -55,9 +55,18 @@
 
 @code
     {
-    bool rememberMe;
     private readonly OpenSkyApi.Login model = new();
     private bool loading;
+    [Parameter]
+    public string ReturnUrl { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (userSession.IsUserLoggedIn)
+        {
+            navigationManager.NavigateTo(this.ReturnUrl ?? "");
+        }
+    }
 
     private async void OnValidSubmit()
     {
@@ -81,8 +90,7 @@
             {
                 alertService.Success(response.Message, true);
                 await userSession.LoggedIn(response.Data);
-                var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
-                navigationManager.NavigateTo(returnUrl);
+                navigationManager.NavigateTo(this.ReturnUrl ?? "");
             }
         }
         catch (ApiException ex)
