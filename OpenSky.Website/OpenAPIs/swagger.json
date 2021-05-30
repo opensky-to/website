@@ -241,6 +241,57 @@
         }
       }
     },
+    "/Authentication/refreshToken": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Refresh OpenSky API JWT token using a single-use refresh token.",
+        "description": "sushi.at, 30/05/2021.",
+        "requestBody": {
+          "description": "The refresh token request model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshToken"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshToken"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshToken"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Authentication/register": {
       "post": {
         "tags": [
@@ -905,6 +956,79 @@
           },
           "data": {
             "$ref": "#/components/schemas/LoginResponse"
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
+      "RefreshToken": {
+        "type": "object",
+        "properties": {
+          "refresh": {
+            "type": "string",
+            "description": "Gets or sets the refresh token.",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "description": "Gets or sets the token.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Refresh JWT token model."
+      },
+      "RefreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "expiration": {
+            "type": "string",
+            "description": "Gets or sets the Date/Time of the expiration.",
+            "format": "date-time"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Gets or sets the refresh token.",
+            "nullable": true
+          },
+          "refreshTokenExpiration": {
+            "type": "string",
+            "description": "Gets or sets the Date/Time of the refresh token expiration.",
+            "format": "date-time"
+          },
+          "token": {
+            "type": "string",
+            "description": "Gets or sets the token.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Refresh token response model."
+      },
+      "RefreshTokenResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/RefreshTokenResponse"
           }
         },
         "additionalProperties": false,

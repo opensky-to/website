@@ -58,8 +58,8 @@ namespace OpenSky.Website.Services
         /// Gets a value indicating whether there is a user currently logged in.
         /// </summary>
         /// -------------------------------------------------------------------------------------------------
-        public bool IsUserLoggedIn { get; private set; } // todo turn this into method that checks expiry and refreshes token if necessary
-
+        public bool IsUserLoggedIn { get; private set; }
+        
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         /// Gets the current OpenSky API token, null if no token is available.
@@ -74,10 +74,25 @@ namespace OpenSky.Website.Services
         /// -------------------------------------------------------------------------------------------------
         public string Username { get; private set; }
 
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets the refresh token.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
         public string RefreshToken { get; private set; }
 
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets the Date/Time of the expiration of the main JWT OpenSky API token.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
         public DateTime? Expiration { get; private set; }
 
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets the Date/Time of the refresh token expiration.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
         public DateTime? RefreshExpiration { get; private set; }
 
         /// -------------------------------------------------------------------------------------------------
@@ -93,31 +108,45 @@ namespace OpenSky.Website.Services
         /// -------------------------------------------------------------------------------------------------
         public async Task Initialize()
         {
-            var existingToken = await this.localStore.GetItemAsStringAsync("OpenSkyApiToken");
-            var expiration = await this.localStore.GetItemAsync<DateTime?>("OpenSkyApiTokenExpiration");
-            var username = await this.localStore.GetItemAsStringAsync("OpenSkyUser");
-            var refreshToken = await this.localStore.GetItemAsStringAsync("OpenSkyApiRefreshToken");
-            var refreshExpiration = await this.localStore.GetItemAsync<DateTime?>("OpenSkyApiRefreshTokenExpiration");
-            if (!string.IsNullOrEmpty(existingToken) && expiration.HasValue && expiration.Value > DateTime.UtcNow)
+            // Restore tokens and expiration times from local store
+            this.OpenSkyApiToken = await this.localStore.GetItemAsStringAsync("OpenSkyApiToken");
+            this.Expiration = await this.localStore.GetItemAsync<DateTime?>("OpenSkyApiTokenExpiration");
+            this.Username = await this.localStore.GetItemAsStringAsync("OpenSkyUser");
+            this.RefreshToken = await this.localStore.GetItemAsStringAsync("OpenSkyApiRefreshToken");
+            this.RefreshExpiration = await this.localStore.GetItemAsync<DateTime?>("OpenSkyApiRefreshTokenExpiration");
+
+            await this.CheckExpiration();
+        }
+
+        public async Task<bool> CheckExpiration()
+        {
+            if (!string.IsNullOrEmpty(this.OpenSkyApiToken) && this.Expiration.HasValue && this.Expiration.Value > DateTime.UtcNow)
             {
-                // API token is still valid
                 this.IsUserLoggedIn = true;
-                this.OpenSkyApiToken = existingToken;
-                this.Expiration = expiration;
-                this.Username = username;
-                this.RefreshToken = refreshToken;
-                this.RefreshExpiration = refreshExpiration;
+                return false;
             }
-            else if (!string.IsNullOrEmpty(refreshToken) && refreshExpiration.HasValue && refreshExpiration.Value > DateTime.UtcNow)
+            
+            if (!string.IsNullOrEmpty(this.RefreshToken) && this.RefreshExpiration.HasValue && this.RefreshExpiration.Value > DateTime.UtcNow)
             {
-                // Refresh the main token using the refresh token
-                // todo
+                this.IsUserLoggedIn = true;
+                return true;
             }
-            else
-            {
-                // Both the API and refresh token have expired, require a full login again
-                await this.Logout();
-            }
+                
+            await this.Logout();
+            return false;
+        }
+
+        public async Task RefreshedToken(RefreshTokenResponse refreshToken)
+        {
+            this.OpenSkyApiToken = refreshToken.Token;
+            this.Expiration = refreshToken.Expiration.UtcDateTime;
+            this.RefreshToken = refreshToken.RefreshToken;
+            this.RefreshExpiration = refreshToken.RefreshTokenExpiration.UtcDateTime;
+            await this.localStore.SetItemAsync("OpenSkyApiToken", refreshToken.Token);
+            await this.localStore.SetItemAsync("OpenSkyApiTokenExpiration", refreshToken.Expiration.UtcDateTime);
+            await this.localStore.SetItemAsync("OpenSkyApiRefreshToken", refreshToken.RefreshToken);
+            await this.localStore.SetItemAsync("OpenSkyApiRefreshTokenExpiration", refreshToken.RefreshTokenExpiration.UtcDateTime);
+
         }
 
         /// -------------------------------------------------------------------------------------------------
