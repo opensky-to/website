@@ -1,0 +1,148 @@
+﻿@page "/apptoken/{AppID}"
+@using Microsoft.Extensions.Configuration
+@using Newtonsoft.Json
+@using OpenSky.Website.OpenAPIs
+@using System.Web
+@inject IConfiguration configuration
+@inject AlertService alertService
+@inject NavigationManager navigationManager
+@inject OpenSkyService openSky
+@inject UserSessionService userSession
+
+@if (appFound)
+{
+    <section id="apptoken">
+        <div class="container">
+            <div class="card-whitebg" style="max-width: 450px;">
+                <img src="@logo" alt="application logo" style="width: 128px; height: 128px;" />
+                <h4 class="card-header">@name</h4>
+                <div class="card-body">
+                    <p class="appdescription">@description</p>
+                    <p>
+                        This application would like to access your OPEN<span style="color: #08c6a4;">SKY</span> account. Please make sure you
+                        <span style="text-decoration: underline;">trust</span> this application before granting access.
+                        You can always revoke access later by visiting the "Account" page (WIP).
+                    </p>
+                    <div class="buttons">
+                        <button disabled="@loading" class="btn btn-primary" @onclick="this.GrantAccess">
+                            @if (loading)
+                            {
+                                <span class="spinner-border spinner-border-sm"></span>
+                            }
+                            Grant access
+                        </button>
+                        <button class="btn btn-danger" @onclick="this.DenyAccess">
+                            Deny access
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public string AppID { get; set; }
+    private bool appFound = false;
+    private string name;
+    private string description;
+    private string logo;
+    private string tokenName;
+    private string uriScheme;
+    private bool loading;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var tokenAppsSection = configuration.GetSection("OpenSky:TokenApps");
+        foreach (var section in tokenAppsSection.GetChildren())
+        {
+            var id = section.GetValue<Guid>("ID");
+            if (Guid.TryParse(AppID, out var appID) && appID == id)
+            {
+                appFound = true;
+                name = section.GetValue<string>("Name");
+                description = section.GetValue<string>("Description");
+                logo = section.GetValue<string>("Logo");
+                tokenName = section.GetValue<string>("TokenName");
+                uriScheme = section.GetValue<string>("UriScheme");
+            }
+        }
+
+        if (!appFound)
+        {
+            alertService.Error("Unknown application configuration, aborting.", false, false);
+        }
+        else
+        {
+            await userSession.CheckExpiration();
+            if (!userSession.IsUserLoggedIn)
+            {
+                navigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private void DenyAccess()
+    {
+        navigationManager.NavigateTo("");
+    }
+
+    private async Task GrantAccess()
+    {
+        loading = true;
+        try
+        {
+            var response = await openSky.ApplicationTokenAsync(new ApplicationToken { Name = this.tokenName });
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+            }
+            else
+            {
+                navigationManager.NavigateTo($"{this.uriScheme}://token={response.Data.Token}&refresh={response.Data.RefreshToken}&user={HttpUtility.HtmlEncode(response.Data.Username)}");
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
+            }
+
+            if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+        }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

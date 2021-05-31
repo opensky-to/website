@@ -1,11 +1,58 @@
 ﻿@page "/logout"
+@using Newtonsoft.Json
+@using OpenSky.Website.OpenAPIs
 @inject UserSessionService userSession
 @inject NavigationManager navigationManager
 @inject AlertService alertService
+@inject OpenSkyService openSky
 
 @code {
     protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            if (!string.IsNullOrEmpty(userSession.RefreshToken))
+            {
+                var refreshToken = userSession.RefreshToken;
+                await openSky.RevokeTokenAsync(new RevokeToken { Token = userSession.RefreshToken });
+
+                if (!string.IsNullOrEmpty(userSession.RefreshToken) && userSession.RefreshToken != refreshToken)
+                {
+                    // Refresh token was just refreshed, revoke that one as well
+                    await openSky.RevokeTokenAsync(new RevokeToken { Token = userSession.RefreshToken });
+                }
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage);
+                        }
+                    }
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+        }
+
         await userSession.Logout();
         alertService.Success("Logged out successfully.", true);
         navigationManager.NavigateTo("");

@@ -142,9 +142,9 @@ namespace OpenSky.Website.Services
             this.Expiration = refreshToken.Expiration.UtcDateTime;
             this.RefreshToken = refreshToken.RefreshToken;
             this.RefreshExpiration = refreshToken.RefreshTokenExpiration.UtcDateTime;
-            await this.localStore.SetItemAsync("OpenSkyApiToken", refreshToken.Token);
+            await this.localStore.SetItemAsStringAsync("OpenSkyApiToken", refreshToken.Token);
             await this.localStore.SetItemAsync("OpenSkyApiTokenExpiration", refreshToken.Expiration.UtcDateTime);
-            await this.localStore.SetItemAsync("OpenSkyApiRefreshToken", refreshToken.RefreshToken);
+            await this.localStore.SetItemAsStringAsync("OpenSkyApiRefreshToken", refreshToken.RefreshToken);
             await this.localStore.SetItemAsync("OpenSkyApiRefreshTokenExpiration", refreshToken.RefreshTokenExpiration.UtcDateTime);
 
         }
@@ -173,10 +173,10 @@ namespace OpenSky.Website.Services
                 this.Username = login.Username;
                 this.RefreshToken = login.RefreshToken;
                 this.RefreshExpiration = login.RefreshTokenExpiration.UtcDateTime;
-                await this.localStore.SetItemAsync("OpenSkyApiToken", login.Token);
+                await this.localStore.SetItemAsStringAsync("OpenSkyApiToken", login.Token);
                 await this.localStore.SetItemAsync("OpenSkyApiTokenExpiration", login.Expiration.UtcDateTime);
-                await this.localStore.SetItemAsync("OpenSkyUser", login.Username);
-                await this.localStore.SetItemAsync("OpenSkyApiRefreshToken", login.RefreshToken);
+                await this.localStore.SetItemAsStringAsync("OpenSkyUser", login.Username);
+                await this.localStore.SetItemAsStringAsync("OpenSkyApiRefreshToken", login.RefreshToken);
                 await this.localStore.SetItemAsync("OpenSkyApiRefreshTokenExpiration", login.RefreshTokenExpiration.UtcDateTime);
                 if (this.NotifyUserChanged != null)
                 {
