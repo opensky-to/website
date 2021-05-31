@@ -1,6 +1,7 @@
-﻿@page "/login/{ReturnUrl?}"
+﻿@page "/login"
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
+@using Microsoft.AspNetCore.WebUtilities
 @inject OpenSkyService openSky
 @inject NavigationManager navigationManager
 @inject AlertService alertService
@@ -53,18 +54,22 @@
 
 <PageFooter />
 
-@code
-    {
+@code {
     private readonly OpenSkyApi.Login model = new();
+    private string returnUrl;
     private bool loading;
-    [Parameter]
-    public string ReturnUrl { get; set; }
 
-    protected override void OnParametersSet()
+    protected override void OnInitialized()
     {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var returnUrlParameter))
+        {
+            returnUrl = returnUrlParameter.ToString();
+        }
+
         if (userSession.IsUserLoggedIn)
         {
-            navigationManager.NavigateTo(this.ReturnUrl ?? "");
+            navigationManager.NavigateTo(this.returnUrl ?? "");
         }
     }
 
@@ -90,7 +95,7 @@
             {
                 alertService.Success(response.Message, true);
                 await userSession.LoggedIn(response.Data);
-                navigationManager.NavigateTo(this.ReturnUrl ?? "");
+                navigationManager.NavigateTo(this.returnUrl ?? "");
             }
         }
         catch (ApiException ex)

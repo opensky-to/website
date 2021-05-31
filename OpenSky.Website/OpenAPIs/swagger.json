@@ -190,6 +190,57 @@
         }
       }
     },
+    "/Authentication/applicationToken": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Get a new application API access token.",
+        "description": "sushi.at, 01/06/2021.",
+        "requestBody": {
+          "description": "The application token model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationToken"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationToken"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationToken"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Authentication/login": {
       "post": {
         "tags": [
@@ -234,6 +285,88 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LoginResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/revokeToken": {
+      "delete": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Revoke specified OpenSky refresh token.",
+        "description": "sushi.at, 31/05/2021.",
+        "requestBody": {
+          "description": "The revoke token model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeToken"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeToken"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeToken"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authentication/revokeAllTokens": {
+      "delete": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Revoke all OpenSky refresh tokens.",
+        "description": "sushi.at, 31/05/2021.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
                 }
               }
             }
@@ -703,6 +836,20 @@
         "additionalProperties": false,
         "description": "Airport model."
       },
+      "ApplicationToken": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the application."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Application token model."
+      },
       "ChangePassword": {
         "required": [
           "newPassword",
@@ -717,6 +864,10 @@
           "password": {
             "type": "string",
             "description": "Gets or sets the password."
+          },
+          "resetTokens": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether to reset all OpenSky api tokens."
           }
         },
         "additionalProperties": false,
@@ -1108,6 +1259,10 @@
             "description": "Gets or sets the recaptcha token.",
             "nullable": true
           },
+          "resetTokens": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether to reset all OpenSky api tokens."
+          },
           "token": {
             "type": "string",
             "description": "Gets or sets the token."
@@ -1115,6 +1270,20 @@
         },
         "additionalProperties": false,
         "description": "Reset password model."
+      },
+      "RevokeToken": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Gets or sets the OpenSky refresh token ID to invalidate."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Revoke token model."
       },
       "StringApiResponse": {
         "type": "object",

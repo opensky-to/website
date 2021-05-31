@@ -1,13 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="OpenSkyServiceBase.cs" company="OpenSky">
+// sushi.at for OpenSky 2021
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+
 
 // ReSharper disable once CheckNamespace
 namespace OpenSkyApi
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading;
+    using System.Threading.Tasks;
 
     using Microsoft.Extensions.Configuration;
 
@@ -26,13 +33,6 @@ namespace OpenSkyApi
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        /// The user session service.
-        /// </summary>
-        /// -------------------------------------------------------------------------------------------------
-        private readonly UserSessionService userSession;
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
         /// The configuration.
         /// </summary>
         /// -------------------------------------------------------------------------------------------------
@@ -45,7 +45,19 @@ namespace OpenSkyApi
         /// -------------------------------------------------------------------------------------------------
         private readonly HttpClient httpClient;
 
-        private Lazy<Newtonsoft.Json.JsonSerializerSettings> settings;
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// JSON serializer settings.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
+        private readonly Lazy<Newtonsoft.Json.JsonSerializerSettings> settings;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// The user session service.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
+        private readonly UserSessionService userSession;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -87,20 +99,32 @@ namespace OpenSkyApi
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Create json serializer settings.
+        /// Gets or sets a value indicating whether the response as string should be read.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
+        public bool ReadResponseAsString { get; set; }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Gets the JSON serializer settings.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
+        protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings => this.settings.Value;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Creates OpenSky HTTP request message asynchronous - automatically adds authorization header and refreshes tokens.
         /// </summary>
         /// <remarks>
-        /// sushi.at, 30/05/2021.
+        /// sushi.at, 31/05/2021.
         /// </remarks>
+        /// <param name="cancellationToken">
+        /// A token that allows processing to be cancelled.
+        /// </param>
         /// <returns>
-        /// The new serializer settings.
+        /// An asynchronous result that yields the create HTTP request message.
         /// </returns>
         /// -------------------------------------------------------------------------------------------------
-        private static Newtonsoft.Json.JsonSerializerSettings CreateSerializerSettings()
-        {
-            return new();
-        }
-
         protected async Task<HttpRequestMessage> CreateHttpRequestMessageAsync(CancellationToken cancellationToken)
         {
             var msg = new HttpRequestMessage();
@@ -128,6 +152,102 @@ namespace OpenSkyApi
             return msg;
         }
 
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Reads object response asynchronous.
+        /// </summary>
+        /// <remarks>
+        /// sushi.at, 31/05/2021.
+        /// </remarks>
+        /// <exception cref="ApiException">
+        /// Thrown when an API error condition occurs.
+        /// </exception>
+        /// <param name="response">
+        /// The HTTP response.
+        /// </param>
+        /// <param name="headers">
+        /// The headers.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A token that allows processing to be cancelled.
+        /// </param>
+        /// <returns>
+        /// An asynchronous result that yields the object response asynchronous.
+        /// </returns>
+        /// -------------------------------------------------------------------------------------------------
+        protected virtual async Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, CancellationToken cancellationToken)
+        {
+            if (response?.Content == null)
+            {
+                return new ObjectResponseResult<T>(default(T), string.Empty);
+            }
+
+            if (this.ReadResponseAsString)
+            {
+                var responseText = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    var typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(responseText, this.JsonSerializerSettings);
+                    return new ObjectResponseResult<T>(typedBody, responseText);
+                }
+                catch (Newtonsoft.Json.JsonException exception)
+                {
+                    var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
+                    throw new ApiException(message, (int)response.StatusCode, responseText, headers, exception);
+                }
+            }
+            else
+            {
+                try
+                {
+                    await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+                    using var streamReader = new System.IO.StreamReader(responseStream);
+                    using var jsonTextReader = new Newtonsoft.Json.JsonTextReader(streamReader);
+                    var serializer = Newtonsoft.Json.JsonSerializer.Create(this.JsonSerializerSettings);
+                    var typedBody = serializer.Deserialize<T>(jsonTextReader);
+                    return new ObjectResponseResult<T>(typedBody, string.Empty);
+                }
+                catch (Newtonsoft.Json.JsonException exception)
+                {
+                    var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
+                    throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+                }
+            }
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Create json serializer settings.
+        /// </summary>
+        /// <remarks>
+        /// sushi.at, 30/05/2021.
+        /// </remarks>
+        /// <returns>
+        /// The new serializer settings.
+        /// </returns>
+        /// -------------------------------------------------------------------------------------------------
+        private static Newtonsoft.Json.JsonSerializerSettings CreateSerializerSettings()
+        {
+            return new();
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Refresh current main JWT token using the refresh token.
+        /// </summary>
+        /// <remarks>
+        /// sushi.at, 31/05/2021.
+        /// </remarks>
+        /// <exception cref="ApiException">
+        /// Thrown when an API error condition occurs.
+        /// </exception>
+        /// <param name="cancellationToken">
+        /// A token that allows processing to be cancelled.
+        /// </param>
+        /// <returns>
+        /// An asynchronous result.
+        /// </returns>
+        /// -------------------------------------------------------------------------------------------------
         private async Task RefreshToken(CancellationToken cancellationToken)
         {
             var requestBody = new RefreshToken
@@ -156,9 +276,9 @@ namespace OpenSkyApi
                 var headers = response.Headers.ToDictionary(h => h.Key, h => h.Value);
                 if (response.Content is { Headers: { } })
                 {
-                    foreach (var item in response.Content.Headers)
+                    foreach (var (key, value) in response.Content.Headers)
                     {
-                        headers[item.Key] = item.Value;
+                        headers[key] = value;
                     }
                 }
 
@@ -193,11 +313,15 @@ namespace OpenSkyApi
             }
         }
 
-        protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return this.settings.Value; } }
-
-        public bool ReadResponseAsString { get; set; }
-
-        protected struct ObjectResponseResult<T>
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Encapsulates the result of an object response.
+        /// </summary>
+        /// <remarks>
+        /// sushi.at, 31/05/2021.
+        /// </remarks>
+        /// -------------------------------------------------------------------------------------------------
+        protected readonly struct ObjectResponseResult<T>
         {
             public ObjectResponseResult(T responseObject, string responseText)
             {
@@ -208,48 +332,6 @@ namespace OpenSkyApi
             public T Object { get; }
 
             public string Text { get; }
-        }
-
-        protected virtual async Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, CancellationToken cancellationToken)
-        {
-            if (response == null || response.Content == null)
-            {
-                return new ObjectResponseResult<T>(default(T), string.Empty);
-            }
-
-            if (this.ReadResponseAsString)
-            {
-                var responseText = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                try
-                {
-                    var typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(responseText, this.JsonSerializerSettings);
-                    return new ObjectResponseResult<T>(typedBody, responseText);
-                }
-                catch (Newtonsoft.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, responseText, headers, exception);
-                }
-            }
-            else
-            {
-                try
-                {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false))
-                    using (var streamReader = new System.IO.StreamReader(responseStream))
-                    using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(streamReader))
-                    {
-                        var serializer = Newtonsoft.Json.JsonSerializer.Create(this.JsonSerializerSettings);
-                        var typedBody = serializer.Deserialize<T>(jsonTextReader);
-                        return new ObjectResponseResult<T>(typedBody, string.Empty);
-                    }
-                }
-                catch (Newtonsoft.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
-                }
-            }
         }
     }
 }
