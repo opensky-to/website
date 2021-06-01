@@ -44,7 +44,7 @@ namespace OpenSkyApi
         /// -------------------------------------------------------------------------------------------------
         public OpenSkyService(IConfiguration configuration, HttpClient httpClient, UserSessionService userSession) : base(configuration, httpClient, userSession)
         {
-            this.BaseUrl = configuration["OpenSkyAPI:Url"];
+            this.BaseUrl = configuration["OpenSky:OpenSkyAPIUrl"];
             this._httpClient = httpClient;
             this._settings = new Lazy<Newtonsoft.Json.JsonSerializerSettings>(this.CreateSerializerSettings);
         }

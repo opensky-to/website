@@ -13,6 +13,7 @@ namespace OpenSkyApi
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -256,8 +257,8 @@ namespace OpenSkyApi
                 Refresh = this.userSession.RefreshToken
             };
 
-            var urlBuilder = new System.Text.StringBuilder();
-            var baseUrl = this.configuration["OpenSkyAPI:Url"];
+            var urlBuilder = new StringBuilder();
+            var baseUrl = this.configuration["OpenSky:OpenSkyAPIUrl"];
             urlBuilder.Append(baseUrl != null ? baseUrl.TrimEnd('/') : "").Append("/Authentication/refreshToken");
 
             using var request = new HttpRequestMessage();
@@ -313,7 +314,7 @@ namespace OpenSkyApi
             }
         }
 
-        /// -------------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------------
         /// <summary>
         /// Encapsulates the result of an object response.
         /// </summary>
@@ -323,14 +324,38 @@ namespace OpenSkyApi
         /// -------------------------------------------------------------------------------------------------
         protected readonly struct ObjectResponseResult<T>
         {
+            /// -------------------------------------------------------------------------------------------------
+            /// <summary>
+            /// Initializes a new instance of the <see cref="OpenSkyServiceBase"/> class.
+            /// </summary>
+            /// <remarks>
+            /// sushi.at, 01/06/2021.
+            /// </remarks>
+            /// <param name="responseObject">
+            /// The response object.
+            /// </param>
+            /// <param name="responseText">
+            /// The response text.
+            /// </param>
+            /// -------------------------------------------------------------------------------------------------
             public ObjectResponseResult(T responseObject, string responseText)
             {
                 this.Object = responseObject;
                 this.Text = responseText;
             }
 
+            /// -------------------------------------------------------------------------------------------------
+            /// <summary>
+            /// Gets the object.
+            /// </summary>
+            /// -------------------------------------------------------------------------------------------------
             public T Object { get; }
 
+            /// -------------------------------------------------------------------------------------------------
+            /// <summary>
+            /// Gets the text.
+            /// </summary>
+            /// -------------------------------------------------------------------------------------------------
             public string Text { get; }
         }
     }

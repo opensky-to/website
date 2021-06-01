@@ -54,7 +54,7 @@ else
 @code {
     [Parameter]
     public string AppID { get; set; }
-    private bool appFound = false;
+    private bool appFound;
     private string name;
     private string description;
     private string logo;
@@ -112,7 +112,7 @@ else
             }
             else
             {
-                var appTokenUri = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{this.uriScheme}://token={response.Data.Token}&refresh={response.Data.RefreshToken}&user={HttpUtility.HtmlEncode(response.Data.Username)}"));
+                var appTokenUri = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{this.uriScheme}://token={response.Data.Token}&tokenExpiration={response.Data.Expiration.UtcDateTime.ToFileTimeUtc()}&refresh={response.Data.RefreshToken}&refreshExpiration={response.Data.RefreshTokenExpiration.UtcDateTime.ToFileTimeUtc()}&user={HttpUtility.HtmlEncode(response.Data.Username)}"));
                 navigationManager.NavigateTo($"apptokensuccess/{HttpUtility.HtmlEncode(appTokenUri)}");
             }
         }
@@ -121,9 +121,8 @@ else
             if (ex.StatusCode == 401)
             {
                 navigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
-            }
-
-            if (!string.IsNullOrEmpty(ex.Response))
+            } 
+            else if (!string.IsNullOrEmpty(ex.Response))
             {
                 var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
                 if (problemDetails != null)
