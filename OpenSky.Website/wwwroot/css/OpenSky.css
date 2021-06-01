@@ -243,6 +243,28 @@ p {
 
 /* End App Token */
 
+/* App Token Success section */
+
+#apptokensuccess {
+    background: #fff;
+}
+
+    #apptokensuccess img {
+        width: 400px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    #apptokensuccess p {
+        color: #bbb;
+        line-height: 1.5rem;
+        text-align: justify;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+/* End App Token Success */
+
 /* Resend validation email section */
 
 #resendvalidationemail {

@@ -3,6 +3,7 @@
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
 @using System.Web
+@using System.Text
 @inject IConfiguration configuration
 @inject AlertService alertService
 @inject NavigationManager navigationManager
@@ -40,6 +41,15 @@
         </div>
     </section>
 }
+else
+{
+    <section id="apptoken">
+        <div class="container">
+        </div>
+    </section>
+}
+
+<PageFooter />
 
 @code {
     [Parameter]
@@ -102,7 +112,8 @@
             }
             else
             {
-                navigationManager.NavigateTo($"{this.uriScheme}://token={response.Data.Token}&refresh={response.Data.RefreshToken}&user={HttpUtility.HtmlEncode(response.Data.Username)}");
+                var appTokenUri = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{this.uriScheme}://token={response.Data.Token}&refresh={response.Data.RefreshToken}&user={HttpUtility.HtmlEncode(response.Data.Username)}"));
+                navigationManager.NavigateTo($"apptokensuccess/{HttpUtility.HtmlEncode(appTokenUri)}");
             }
         }
         catch (ApiException ex)
