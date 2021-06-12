@@ -177,6 +177,12 @@ p {
         z-index: -1;
     }
 
+    #resetpassword .reset-tokens {
+        color: #bbb;
+        align-items: center;
+        cursor: pointer;
+    }
+
 /* End Reset password */
 
 /* Change password section */
@@ -185,7 +191,79 @@ p {
     background: #fff;
 }
 
+    #changepassword .reset-tokens {
+        color: #bbb;
+        align-items: center;
+        cursor: pointer;
+    }
+
 /* End Change password */
+
+/* App Token section */
+
+#apptoken {
+    background: #fff;
+}
+
+    #apptoken .appdescription {
+        color: #bbb;
+        font-size: 1rem;
+        line-height: 1rem;
+        font-weight: bold;
+        text-align: center;
+        margin-top: -15px;
+    }
+
+    #apptoken img {
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    #apptoken p {
+        color: #bbb;
+        line-height: 1.5rem;
+        text-align: justify;
+        margin-left: 30px;
+        margin-right: 30px;
+    }
+
+    #apptoken .buttons {
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    #apptoken button {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+/* End App Token */
+
+/* App Token Success section */
+
+#apptokensuccess {
+    background: #fff;
+}
+
+    #apptokensuccess img {
+        width: 400px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    #apptokensuccess p {
+        color: #bbb;
+        line-height: 1.5rem;
+        text-align: justify;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+/* End App Token Success */
 
 /* Resend validation email section */
 
@@ -812,6 +890,5 @@ p {
     #login .bottomLinks {
         margin-top: 30px;
     }
-
 }
 /* End  Media Query For Desktop */

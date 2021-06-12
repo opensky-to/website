@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
+@using Microsoft.AspNetCore.WebUtilities
 @inject OpenSkyService openSky
 @inject NavigationManager navigationManager
 @inject AlertService alertService
@@ -27,7 +28,7 @@
                     </div>
                     <div class="form-group" style="padding-bottom: 30px;">
                         <div class="custom-checkbox">
-                            <InputCheckbox @bind-Value="rememberMe" id="rememberMeCheck"></InputCheckbox>
+                            <InputCheckbox @bind-Value="model.RememberMe" id="rememberMeCheck"></InputCheckbox>
                             <label class="remember-me" for="rememberMeCheck" style="float: left;">Remember me</label>
                         </div>
 
@@ -47,17 +48,32 @@
                     </div>
                 </EditForm>
             </div>
+            <p>@returnUrl</p>
         </div>
     </div>
 </section>
 
 <PageFooter />
 
-@code
-    {
-    bool rememberMe;
+@code {
     private readonly OpenSkyApi.Login model = new();
+    private string returnUrl;
     private bool loading;
+
+    protected override void OnInitialized()
+    {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var returnUrlParameter))
+        {
+            returnUrl = returnUrlParameter.ToString();
+            StateHasChanged();
+        }
+
+        if (userSession.IsUserLoggedIn)
+        {
+            navigationManager.NavigateTo(this.returnUrl ?? "");
+        }
+    }
 
     private async void OnValidSubmit()
     {
@@ -81,8 +97,7 @@
             {
                 alertService.Success(response.Message, true);
                 await userSession.LoggedIn(response.Data);
-                var returnUrl = navigationManager.QueryString("returnUrl") ?? "";
-                navigationManager.NavigateTo(returnUrl);
+                navigationManager.NavigateTo(this.returnUrl ?? "");
             }
         }
         catch (ApiException ex)
