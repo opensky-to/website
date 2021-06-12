@@ -1,0 +1,43 @@
+﻿@page "/apptokensuccess/{AppToken}"
+@using System.Web
+@using System.Text
+@inject NavigationManager navigationManager
+@inject AlertService alertService
+
+<section id="apptokensuccess">
+    <div class="container">
+        <div class="card-whitebg" style="max-width: 450px; width: 450px;">
+            <img src="/img/success.png" alt="success" />
+            <p>
+                Your application token was created successfully and your browser should now prompt you to return to
+                application that requested access.
+            </p>
+            <p>
+                If you previously granted this permission the application will
+                have already received the token and you can safely close this browser tab.
+            </p>
+        </div>
+    </div>
+</section>
+
+<PageFooter />
+
+@code {
+    [Parameter]
+    public string AppToken { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        try
+        {
+            var token = HttpUtility.HtmlDecode(this.AppToken);
+            token = Encoding.UTF8.GetString(Convert.FromBase64String(token));
+
+            navigationManager.NavigateTo(token);
+        }
+        catch
+        {
+            alertService.Error("Error decoding application token.", false, false);
+        }
+    }
+}
