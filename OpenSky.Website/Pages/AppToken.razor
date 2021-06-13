@@ -121,7 +121,7 @@ else
             if (ex.StatusCode == 401)
             {
                 navigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
-            } 
+            }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
                 var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);

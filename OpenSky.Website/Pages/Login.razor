@@ -48,7 +48,6 @@
                     </div>
                 </EditForm>
             </div>
-            <p>@returnUrl</p>
         </div>
     </div>
 </section>
@@ -95,9 +94,9 @@
             }
             else
             {
-                alertService.Success(response.Message, true);
                 await userSession.LoggedIn(response.Data);
-                navigationManager.NavigateTo(this.returnUrl ?? "");
+                alertService.Success(response.Message, true);
+                navigationManager.NavigateTo(this.returnUrl ?? "", true);
             }
         }
         catch (ApiException ex)
