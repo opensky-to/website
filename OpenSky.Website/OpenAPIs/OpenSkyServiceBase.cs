@@ -1,10 +1,8 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="OpenSkyServiceBase.cs" company="OpenSky">
-// sushi.at for OpenSky 2021
+// OpenSky project 2021
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
-
 
 // ReSharper disable once CheckNamespace
 namespace OpenSkyApi

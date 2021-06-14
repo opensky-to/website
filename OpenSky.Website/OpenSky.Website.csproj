@@ -3,12 +3,15 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>242cf81d-3597-4101-99e1-2bda690ac446</UserSecretsId>
-    <Authors>sushi.at</Authors>
+    <Authors>OpenSky project</Authors>
     <Company>OpenSky</Company>
     <Product>OpenSky</Product>
     <Description>Website for OpenSky</Description>
-    <Copyright>sushi.at for OpenSky 2021</Copyright>
+    <Copyright>OpenSky project 2021</Copyright>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <PackageProjectUrl>https://www.opensky.to</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/opensky-to/website</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
