@@ -1,0 +1,47 @@
+﻿@page "/account"
+@inject NavigationManager navigationManager
+@inject UserSessionService userSession
+
+<section id="account">
+    <div class="container">
+        <div class="card-whitebg">
+            <h4 class="card-header">My OPEN<span style="color: #08c6a4;">SKY</span> account</h4>
+            <div class="card-body" style="text-align: center;">
+                <img src="img/profile.png" style="width: 200px; height: 200px;" />
+                <p>
+                    Account name: sushi.at<br />
+                    Joined: 10/5/2021
+                </p>
+                <span >
+                    <button class="btn btn-primary" style="width: 45%; font-size: 0.9rem; height: 90px;">
+                        Update Profile Image
+                    </button>
+                    <button @onclick="ChangePassword" class="btn btn-primary" style="width: 45%; font-size: 0.9rem; height: 90px;">
+                        Change Password
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <div class="card-whitebg" style="margin-left: 30px;">
+            <h4 class="card-header">Linked Accounts and Keys</h4>
+
+        </div>
+    </div>
+</section>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await userSession.CheckExpiration();
+        if (!userSession.IsUserLoggedIn)
+        {
+            navigationManager.NavigateTo("login?returnUrl=/account");
+        }
+    }
+
+    private void ChangePassword()
+    {
+        navigationManager.NavigateTo("changepassword");
+    }
+}

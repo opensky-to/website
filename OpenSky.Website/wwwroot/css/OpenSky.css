@@ -199,6 +199,26 @@ p {
 
 /* End Change password */
 
+/* Account section */
+
+#account {
+    background: #fff;
+}
+
+#account p {
+    color: #fff;
+    font-size: 1.2em;
+    line-height: 1.3em;
+}
+
+#account .container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* End Account */
+
 /* App Token section */
 
 #apptoken {

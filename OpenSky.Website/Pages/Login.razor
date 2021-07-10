@@ -70,7 +70,7 @@
 
         if (userSession.IsUserLoggedIn)
         {
-            navigationManager.NavigateTo(this.returnUrl ?? "");
+            navigationManager.NavigateTo(this.returnUrl ?? "account");
         }
     }
 
@@ -96,7 +96,7 @@
             {
                 await userSession.LoggedIn(response.Data);
                 alertService.Success(response.Message, true);
-                navigationManager.NavigateTo(this.returnUrl ?? "", true);
+                navigationManager.NavigateTo(this.returnUrl ?? "account", true);
             }
         }
         catch (ApiException ex)
