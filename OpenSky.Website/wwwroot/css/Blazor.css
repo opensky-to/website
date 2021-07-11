@@ -43,6 +43,7 @@
         opacity: 0;
         transform: translateY(-60px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -168,7 +169,25 @@ textarea.form-control.invalid {
     text-transform: uppercase;
     letter-spacing: 0.15rem;
     border: 0;
+    font-weight: bold;
+    background-color: #888888;
 }
+
+    .btn:hover {
+        background-color: #aaaaaa;
+    }
+
+    .btn:focus {
+        background-color: #888888;
+    }
+
+    .btn:active {
+        background-color: #888888;
+    }
+
+    .btn:disabled {
+        background-color: #555555;
+    }
 
 .btn-primary {
     background-color: #08c6a4;
@@ -242,9 +261,9 @@ a {
     line-height: 1.5rem;
 }
 
-.close:hover {
-    color: #fff;
-}
+    .close:hover {
+        color: #fff;
+    }
 
 .form-control {
     height: 35px;
@@ -372,7 +391,9 @@ a {
 
 /* Media Query For Desktop */
 @media only screen and (min-width: 1200px) {
-    .form-group { margin-bottom: 30px; }
+    .form-group {
+        margin-bottom: 30px;
+    }
 
     .form-control {
         font-size: 18px;
