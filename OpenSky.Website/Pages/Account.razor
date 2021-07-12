@@ -70,24 +70,31 @@
                 <h4 class="card-header">Active Sessions</h4>
                 <div class="card-body" style="text-align: center;">
                     <table style="width: 100%; color: #fff; font-size: 1.3rem;">
+                        <thead>
                         <tr>
-                            <th>name</th>
-                            <th>expiry</th>
-                            <th>last ip</th>
-                            <th>country</th>
-                            <th>revoke</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Expiry</th>
+                            <th scope="col">Last IP</th>
+                            <th scope="col">Country</th>
+                            <th scope="col">Revoke?</th>
                         </tr>
+                        </thead>
+                        <tbody>
                         @foreach (var token in tokens)
                         {
                             <tr>
-                                <td>@token.Name</td>
-                                <td>@token.Expiry.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@token.TokenIP</td>
-                                <td>@token.TokenGeo</td>
-                                <td><button class="btn" style="height: 40px; padding: 0 1.25rem; margin: 5px;">Revoke</button></td>
+                                <td data-label="Name">@token.Name@(userSession.ExpirationMatchesCurrentRefreshToken(token) ? "*" : string.Empty)</td>
+                                <td data-label="Expiry">@token.Expiry.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") utc</td>
+                                <td data-label="Last IP">@(!string.IsNullOrEmpty(token.TokenIP) ? token.TokenIP : "?")</td>
+                                <td data-label="Country">@(!string.IsNullOrEmpty(token.TokenGeo) ? token.TokenGeo : "?")</td>
+                                @* ReSharper disable UseOfImplicitGlobalInFunctionScope *@
+                                <td data-label="Revoke?"><button @onclick="(async () => { await RevokeToken(token); await UpdateTokens(); })" class="btn" style="height: 40px; padding: 0 1.25rem; margin: 5px;">Revoke</button></td>
+                                @* ReSharper restore UseOfImplicitGlobalInFunctionScope *@
                             </tr>
                         }
+                        </tbody>
                     </table>
+                    <p style="font-size: 0.7rem; margin-top: 10px;">* Current session; Please note that sessions will remain active for up to 10 minutes after you revoke them.</p>
                 </div>
             </div>
         </div>
@@ -101,7 +108,7 @@
     private bool savingAccounts;
     private string accountName = "???";
     private string joined = "???";
-    private List<Token> tokens = new();
+    private readonly List<Token> tokens = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -112,6 +119,13 @@
             return;
         }
 
+        await UpdateAccountOverview();
+        await UpdateLinkedAccounts();
+        await UpdateTokens();
+    }
+
+    private async Task UpdateAccountOverview()
+    {
         try
         {
             var response = await openSky.GetAccountOverviewAsync();
@@ -124,6 +138,7 @@
             {
                 accountName = response.Data.Name;
                 joined = response.Data.Joined.ToString("dd/MM/yyyy");
+                StateHasChanged();
             }
         }
         catch (ApiException ex)
@@ -164,60 +179,10 @@
             alertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
+    }
 
-        try
-        {
-            tokens.Clear();
-            var response = await openSky.GetTokensAsync();
-            if (response.IsError)
-            {
-                alertService.Error(response.Message);
-                StateHasChanged();
-            }
-            else
-            {
-                tokens.AddRange(response.Data);
-            }
-        }
-        catch (ApiException ex)
-        {
-            if (ex.StatusCode == 401)
-            {
-                navigationManager.NavigateTo("login?returnUrl=/account");
-            }
-            else if (!string.IsNullOrEmpty(ex.Response))
-            {
-                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
-                if (problemDetails != null)
-                {
-                    foreach (var problemDetailsError in problemDetails.Errors)
-                    {
-                        foreach (var errorMessage in problemDetailsError.Value)
-                        {
-                            alertService.Error(errorMessage, false, false);
-                        }
-                    }
-
-                    StateHasChanged();
-                }
-                else
-                {
-                    alertService.Error(ex.Message, false, false);
-                    StateHasChanged();
-                }
-            }
-            else
-            {
-                alertService.Error(ex.Message, false, false);
-                StateHasChanged();
-            }
-        }
-        catch (Exception ex)
-        {
-            alertService.Error(ex.Message, false, false);
-            StateHasChanged();
-        }
-
+    private async Task UpdateLinkedAccounts()
+    {
         try
         {
             savingAccounts = true;
@@ -290,6 +255,63 @@
         }
     }
 
+    private async Task UpdateTokens()
+    {
+        try
+        {
+            tokens.Clear();
+            var response = await openSky.GetTokensAsync();
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                tokens.AddRange(response.Data);
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/account");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+
     private void ChangePassword()
     {
         navigationManager.NavigateTo("changepassword");
@@ -355,6 +377,67 @@
         {
             alertService.Error(ex.Message, false, false);
             savingAccounts = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RevokeToken(Token token)
+    {
+        alertService.Clear();
+        try
+        {
+            var response = await openSky.RevokeTokenByNameAsync(new RevokeTokenByName
+            {
+                Name = token.Name,
+                Expiry = token.Expiry
+            });
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true);
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
     }
