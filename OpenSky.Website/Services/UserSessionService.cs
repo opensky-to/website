@@ -55,11 +55,18 @@ namespace OpenSky.Website.Services
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
+        /// Gets the Date/Time of the expiration of the main JWT OpenSky API token.
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
+        public DateTime? Expiration { get; private set; }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
         /// Gets a value indicating whether there is a user currently logged in.
         /// </summary>
         /// -------------------------------------------------------------------------------------------------
         public bool IsUserLoggedIn { get; private set; }
-        
+
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         /// Gets the current OpenSky API token, null if no token is available.
@@ -69,10 +76,10 @@ namespace OpenSky.Website.Services
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Gets the username (for display purposes only).
+        /// Gets the Date/Time of the refresh token expiration.
         /// </summary>
         /// -------------------------------------------------------------------------------------------------
-        public string Username { get; private set; }
+        public DateTime? RefreshExpiration { get; private set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -83,17 +90,67 @@ namespace OpenSky.Website.Services
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Gets the Date/Time of the expiration of the main JWT OpenSky API token.
+        /// Gets the username (for display purposes only).
         /// </summary>
         /// -------------------------------------------------------------------------------------------------
-        public DateTime? Expiration { get; private set; }
+        public string Username { get; private set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Gets the Date/Time of the refresh token expiration.
+        /// Check token expiration.
         /// </summary>
+        /// <remarks>
+        /// sushi.at, 01/06/2021.
+        /// </remarks>
+        /// <returns>
+        /// An asynchronous result that yields true if the main JWT token needs to be refreshed, false if
+        /// it is current or the refresh token is also expired (will trigger logout!).
+        /// </returns>
         /// -------------------------------------------------------------------------------------------------
-        public DateTime? RefreshExpiration { get; private set; }
+        public async Task<bool> CheckExpiration()
+        {
+            if (!string.IsNullOrEmpty(this.OpenSkyApiToken) && this.Expiration.HasValue && this.Expiration.Value > DateTime.UtcNow)
+            {
+                this.IsUserLoggedIn = true;
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(this.RefreshToken) && this.RefreshExpiration.HasValue && this.RefreshExpiration.Value > DateTime.UtcNow)
+            {
+                this.IsUserLoggedIn = true;
+                return true;
+            }
+
+            await this.Logout();
+            return false;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Checks if the specified token matches our current refresh token.
+        /// </summary>
+        /// <remarks>
+        /// sushi.at, 12/07/2021.
+        /// </remarks>
+        /// <param name="token">
+        /// The token to check.
+        /// </param>
+        /// <returns>
+        /// True if it matches, false if it doesn't.
+        /// </returns>
+        /// -------------------------------------------------------------------------------------------------
+        public bool ExpirationMatchesCurrentRefreshToken(Token token)
+        {
+            if (token.Name is "website" or "website-debug")
+            {
+                if (this.RefreshExpiration.HasValue)
+                {
+                    return (this.RefreshExpiration.Value - token.Expiry.UtcDateTime).TotalSeconds < 1;
+                }
+            }
+
+            return false;
+        }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -116,63 +173,6 @@ namespace OpenSky.Website.Services
             this.RefreshExpiration = await this.localStore.GetItemAsync<DateTime?>("OpenSkyApiRefreshTokenExpiration");
 
             await this.CheckExpiration();
-        }
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        /// Check token expiration.
-        /// </summary>
-        /// <remarks>
-        /// sushi.at, 01/06/2021.
-        /// </remarks>
-        /// <returns>
-        /// An asynchronous result that yields true if the main JWT token needs to be refreshed, false if
-        /// it is current or the refresh token is also expired (will trigger logout!).
-        /// </returns>
-        /// -------------------------------------------------------------------------------------------------
-        public async Task<bool> CheckExpiration()
-        {
-            if (!string.IsNullOrEmpty(this.OpenSkyApiToken) && this.Expiration.HasValue && this.Expiration.Value > DateTime.UtcNow)
-            {
-                this.IsUserLoggedIn = true;
-                return false;
-            }
-            
-            if (!string.IsNullOrEmpty(this.RefreshToken) && this.RefreshExpiration.HasValue && this.RefreshExpiration.Value > DateTime.UtcNow)
-            {
-                this.IsUserLoggedIn = true;
-                return true;
-            }
-                
-            await this.Logout();
-            return false;
-        }
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        /// The tokens were refreshed.
-        /// </summary>
-        /// <remarks>
-        /// sushi.at, 01/06/2021.
-        /// </remarks>
-        /// <param name="refreshToken">
-        /// The refresh token response model (contains new tokens).
-        /// </param>
-        /// <returns>
-        /// An asynchronous result.
-        /// </returns>
-        /// -------------------------------------------------------------------------------------------------
-        public async Task RefreshedToken(RefreshTokenResponse refreshToken)
-        {
-            this.OpenSkyApiToken = refreshToken.Token;
-            this.Expiration = refreshToken.Expiration.UtcDateTime;
-            this.RefreshToken = refreshToken.RefreshToken;
-            this.RefreshExpiration = refreshToken.RefreshTokenExpiration.UtcDateTime;
-            await this.localStore.SetItemAsStringAsync("OpenSkyApiToken", refreshToken.Token);
-            await this.localStore.SetItemAsync("OpenSkyApiTokenExpiration", refreshToken.Expiration.UtcDateTime);
-            await this.localStore.SetItemAsStringAsync("OpenSkyApiRefreshToken", refreshToken.RefreshToken);
-            await this.localStore.SetItemAsync("OpenSkyApiRefreshTokenExpiration", refreshToken.RefreshTokenExpiration.UtcDateTime);
-
         }
 
         /// -------------------------------------------------------------------------------------------------
@@ -243,6 +243,32 @@ namespace OpenSky.Website.Services
             {
                 await this.NotifyUserChanged.Invoke(false);
             }
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// The tokens were refreshed.
+        /// </summary>
+        /// <remarks>
+        /// sushi.at, 01/06/2021.
+        /// </remarks>
+        /// <param name="refreshToken">
+        /// The refresh token response model (contains new tokens).
+        /// </param>
+        /// <returns>
+        /// An asynchronous result.
+        /// </returns>
+        /// -------------------------------------------------------------------------------------------------
+        public async Task RefreshedToken(RefreshTokenResponse refreshToken)
+        {
+            this.OpenSkyApiToken = refreshToken.Token;
+            this.Expiration = refreshToken.Expiration.UtcDateTime;
+            this.RefreshToken = refreshToken.RefreshToken;
+            this.RefreshExpiration = refreshToken.RefreshTokenExpiration.UtcDateTime;
+            await this.localStore.SetItemAsStringAsync("OpenSkyApiToken", refreshToken.Token);
+            await this.localStore.SetItemAsync("OpenSkyApiTokenExpiration", refreshToken.Expiration.UtcDateTime);
+            await this.localStore.SetItemAsStringAsync("OpenSkyApiRefreshToken", refreshToken.RefreshToken);
+            await this.localStore.SetItemAsync("OpenSkyApiRefreshTokenExpiration", refreshToken.RefreshTokenExpiration.UtcDateTime);
         }
     }
 }
