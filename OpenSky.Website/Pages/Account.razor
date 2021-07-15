@@ -147,7 +147,10 @@
             {
                 accountName = response.Data.Name;
                 joined = response.Data.Joined.ToString("dd/MM/yyyy");
-                profileImage = $"data:image/png;base64,{Convert.ToBase64String(response.Data.ProfileImage)}";
+                if (response.Data.ProfileImage?.Length > 0)
+                {
+                    profileImage = $"data:image/png;base64,{Convert.ToBase64String(response.Data.ProfileImage)}";
+                }
                 StateHasChanged();
             }
         }
