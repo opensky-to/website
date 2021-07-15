@@ -1,0 +1,512 @@
+﻿@page "/account"
+@using Newtonsoft.Json
+@using OpenSky.Website.OpenAPIs
+@inject NavigationManager navigationManager
+@inject UserSessionService userSession
+@inject OpenSkyService openSky
+@inject AlertService alertService
+@inject HttpClient http
+
+<section id="account">
+    <div class="account container">
+        <div class="accountflex">
+            <div class="card-whitebg">
+                <h4 class="card-header">My OPEN<span style="color: #08c6a4;">SKY</span> Account</h4>
+                <div class="card-body" style="text-align: center;">
+                    <img src="@profileImage" style="width: 200px; height: 200px; border-radius: 50%;" alt="profile image" />
+                    <p style="margin-top: 20px; font-size: 1.3rem;">
+                        Account Name: @accountName<br />
+                        Joined: @joined
+                    </p>
+                    <div class="bottomButton">
+                        <div class="upload-button">
+                            <button class="btn btn-primary" style="width: 100%;"
+                                    onclick="document.getElementById('profileFile').click();">
+                                Update Profile Image
+                            </button>
+                            <InputFile id="profileFile" OnChange="UploadProfileImage"></InputFile>
+                        </div>
+                        <button @onclick="ChangePassword" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                            Change Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-whitebg">
+                <h4 class="card-header">Linked Accounts and Keys</h4>
+                <div class="card-body" style="text-align: center;">
+                    <EditForm Model="@linkedAccounts" OnValidSubmit="OnValidLinkedAccountsSubmit">
+                        <DataAnnotationsValidator />
+
+                        <p style="text-align: left;">
+                            A Bing Maps key is required to correctly display the maps in the various clients, if you don't already have one please visit the
+                            <a href="https://www.bingmapsportal.com/Application" target="_blank">Bing Maps Dev Center</a> and create one.
+                        </p>
+                        <div class="form-group">
+                            <p class="formLabel">Bing Maps Key:</p>
+                            <InputText @bind-Value="linkedAccounts.BingMapsKey" class="form-control" placeHolder="Bing Maps Key" />
+                            <ValidationMessage For="@(() => linkedAccounts.BingMapsKey)" />
+                        </div>
+
+                        <p style="text-align: left;">
+                            You can import your simBrief flight plans into your flight tracking sessions, to enable this feature please enter your account alias as shown on the
+                            <a href="https://www.simbrief.com/system/profile.php#account">simBrief Account Settings</a> page.
+                        </p>
+                        <div class="form-group">
+                            <p class="formLabel">simBrief User Name:</p>
+                            <InputText @bind-Value="linkedAccounts.SimbriefUsername" class="form-control" placeHolder="simBrief User Name" />
+                            <ValidationMessage For="@(() => linkedAccounts.SimbriefUsername)" />
+                        </div>
+
+                        <p class="formLabel">&nbsp;</p>
+                        <button disabled="@savingAccounts" class="btn btn-primary" style="width: 100%;">
+                            @if (savingAccounts)
+                            {
+                                <span class="spinner-border spinner-border-sm"></span>
+                            }
+                            Save
+                        </button>
+                    </EditForm>
+                </div>
+            </div>
+
+            <div class="card-whitebg wide">
+                <h4 class="card-header">Active Sessions</h4>
+                <div class="card-body" style="text-align: center;">
+                    <table style="width: 100%; color: #fff; font-size: 1.3rem;">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Expiry</th>
+                                <th scope="col">Last IP</th>
+                                <th scope="col">Country</th>
+                                <th scope="col">Revoke?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var token in tokens)
+                            {
+                                <tr>
+                                    <td data-label="Name">@token.Name@(userSession.ExpirationMatchesCurrentRefreshToken(token) ? "*" : string.Empty)</td>
+                                    <td data-label="Expiry">@token.Expiry.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") utc</td>
+                                    <td data-label="Last IP">@(!string.IsNullOrEmpty(token.TokenIP) ? token.TokenIP : "?")</td>
+                                    <td data-label="Country">@(!string.IsNullOrEmpty(token.TokenGeo) ? token.TokenGeo : "?")</td>
+                                    @* ReSharper disable UseOfImplicitGlobalInFunctionScope *@
+                                    <td data-label="Revoke?"><button @onclick="(async () => { await RevokeToken(token); await UpdateTokens(); })" class="btn" style="height: 40px; padding: 0 1.25rem; margin: 5px;">Revoke</button></td>
+                                    @* ReSharper restore UseOfImplicitGlobalInFunctionScope *@
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.7rem; margin-top: 10px;">* Current session; Please note that sessions will remain active for up to 10 minutes after you revoke them.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<PageFooter />
+
+@code {
+    private readonly LinkedAccounts linkedAccounts = new();
+    private bool savingAccounts;
+    private string accountName = "???";
+    private string joined = "???";
+    private readonly List<Token> tokens = new();
+    private string profileImage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await userSession.CheckExpiration();
+        if (!userSession.IsUserLoggedIn)
+        {
+            navigationManager.NavigateTo("login?returnUrl=/account");
+            return;
+        }
+
+        // Load default profile image
+        profileImage = $"data:image/png;base64,{Convert.ToBase64String(await http.GetByteArrayAsync("img/profile.png"))}";
+
+        await UpdateAccountOverview();
+        await UpdateLinkedAccounts();
+        await UpdateTokens();
+    }
+
+    private async Task UpdateAccountOverview()
+    {
+        try
+        {
+            var response = await openSky.GetAccountOverviewAsync();
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                accountName = response.Data.Name;
+                joined = response.Data.Joined.ToString("dd/MM/yyyy");
+                profileImage = $"data:image/png;base64,{Convert.ToBase64String(response.Data.ProfileImage)}";
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/account");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateLinkedAccounts()
+    {
+        try
+        {
+            savingAccounts = true;
+            var response = await openSky.GetLinkedAccountsAsync();
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                linkedAccounts.SimbriefUsername = string.Empty;
+                linkedAccounts.BingMapsKey = string.Empty;
+                savingAccounts = false;
+                StateHasChanged();
+            }
+            else
+            {
+                linkedAccounts.SimbriefUsername = response.Data.SimbriefUsername;
+                linkedAccounts.BingMapsKey = response.Data.BingMapsKey;
+                savingAccounts = false;
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/account");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    linkedAccounts.SimbriefUsername = string.Empty;
+                    linkedAccounts.BingMapsKey = string.Empty;
+                    savingAccounts = false;
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    linkedAccounts.SimbriefUsername = string.Empty;
+                    linkedAccounts.BingMapsKey = string.Empty;
+                    savingAccounts = false;
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                linkedAccounts.SimbriefUsername = string.Empty;
+                linkedAccounts.BingMapsKey = string.Empty;
+                savingAccounts = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            linkedAccounts.SimbriefUsername = string.Empty;
+            linkedAccounts.BingMapsKey = string.Empty;
+            savingAccounts = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateTokens()
+    {
+        try
+        {
+            tokens.Clear();
+            var response = await openSky.GetTokensAsync();
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                tokens.AddRange(response.Data);
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/account");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+
+    private void ChangePassword()
+    {
+        navigationManager.NavigateTo("changepassword");
+    }
+
+    private async void OnValidLinkedAccountsSubmit()
+    {
+        alertService.Clear();
+        savingAccounts = true;
+        try
+        {
+            var response = await openSky.UpdateLinkedAccountsAsync(linkedAccounts);
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                savingAccounts = false;
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true);
+                savingAccounts = false;
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    savingAccounts = false;
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    savingAccounts = false;
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                savingAccounts = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            savingAccounts = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RevokeToken(Token token)
+    {
+        alertService.Clear();
+        try
+        {
+            var response = await openSky.RevokeTokenByNameAsync(new RevokeTokenByName
+            {
+                Name = token.Name,
+                Expiry = token.Expiry
+            });
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true);
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+
+    private async Task UploadProfileImage(InputFileChangeEventArgs e)
+    {
+        alertService.Clear();
+        try
+        {
+            var response = await openSky.UploadProfileImageAsync(new FileParameter(e.File.OpenReadStream(), e.File.Name, e.File.ContentType));
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true);
+                StateHasChanged();
+                await UpdateAccountOverview();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+}
