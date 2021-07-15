@@ -119,6 +119,58 @@
         }
       }
     },
+    "/Account/profileImage": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Upload profile image.",
+        "description": "sushi.at, 12/07/2021.",
+        "operationId": "UploadProfileImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fileUpload": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "fileUpload": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/AircraftType": {
       "post": {
         "tags": [
@@ -3386,16 +3438,19 @@
       "RevokeTokenByName": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
           "expiry": {
             "type": "string",
+            "description": "Gets or sets the Date/Time of the expiry.",
             "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name.",
+            "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Revoke token by name and expiry model."
       },
       "Simulator": {
         "enum": [

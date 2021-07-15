@@ -5,6 +5,7 @@
 @inject UserSessionService userSession
 @inject OpenSkyService openSky
 @inject AlertService alertService
+@inject HttpClient http
 
 <section id="account">
     <div class="account container">
@@ -12,15 +13,19 @@
             <div class="card-whitebg">
                 <h4 class="card-header">My OPEN<span style="color: #08c6a4;">SKY</span> Account</h4>
                 <div class="card-body" style="text-align: center;">
-                    <img src="img/profile.png" style="width: 200px; height: 200px;" alt="profile image" />
+                    <img src="@profileImage" style="width: 200px; height: 200px; border-radius: 50%;" alt="profile image" />
                     <p style="margin-top: 20px; font-size: 1.3rem;">
                         Account Name: @accountName<br />
                         Joined: @joined
                     </p>
                     <div class="bottomButton">
-                        <button class="btn btn-primary" style="width: 100%;">
-                            Update Profile Image
-                        </button>
+                        <div class="upload-button">
+                            <button class="btn btn-primary" style="width: 100%;"
+                                    onclick="document.getElementById('profileFile').click();">
+                                Update Profile Image
+                            </button>
+                            <InputFile id="profileFile" OnChange="UploadProfileImage"></InputFile>
+                        </div>
                         <button @onclick="ChangePassword" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
                             Change Password
                         </button>
@@ -71,27 +76,27 @@
                 <div class="card-body" style="text-align: center;">
                     <table style="width: 100%; color: #fff; font-size: 1.3rem;">
                         <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Expiry</th>
-                            <th scope="col">Last IP</th>
-                            <th scope="col">Country</th>
-                            <th scope="col">Revoke?</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Expiry</th>
+                                <th scope="col">Last IP</th>
+                                <th scope="col">Country</th>
+                                <th scope="col">Revoke?</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach (var token in tokens)
-                        {
-                            <tr>
-                                <td data-label="Name">@token.Name@(userSession.ExpirationMatchesCurrentRefreshToken(token) ? "*" : string.Empty)</td>
-                                <td data-label="Expiry">@token.Expiry.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") utc</td>
-                                <td data-label="Last IP">@(!string.IsNullOrEmpty(token.TokenIP) ? token.TokenIP : "?")</td>
-                                <td data-label="Country">@(!string.IsNullOrEmpty(token.TokenGeo) ? token.TokenGeo : "?")</td>
-                                @* ReSharper disable UseOfImplicitGlobalInFunctionScope *@
-                                <td data-label="Revoke?"><button @onclick="(async () => { await RevokeToken(token); await UpdateTokens(); })" class="btn" style="height: 40px; padding: 0 1.25rem; margin: 5px;">Revoke</button></td>
-                                @* ReSharper restore UseOfImplicitGlobalInFunctionScope *@
-                            </tr>
-                        }
+                            @foreach (var token in tokens)
+                            {
+                                <tr>
+                                    <td data-label="Name">@token.Name@(userSession.ExpirationMatchesCurrentRefreshToken(token) ? "*" : string.Empty)</td>
+                                    <td data-label="Expiry">@token.Expiry.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") utc</td>
+                                    <td data-label="Last IP">@(!string.IsNullOrEmpty(token.TokenIP) ? token.TokenIP : "?")</td>
+                                    <td data-label="Country">@(!string.IsNullOrEmpty(token.TokenGeo) ? token.TokenGeo : "?")</td>
+                                    @* ReSharper disable UseOfImplicitGlobalInFunctionScope *@
+                                    <td data-label="Revoke?"><button @onclick="(async () => { await RevokeToken(token); await UpdateTokens(); })" class="btn" style="height: 40px; padding: 0 1.25rem; margin: 5px;">Revoke</button></td>
+                                    @* ReSharper restore UseOfImplicitGlobalInFunctionScope *@
+                                </tr>
+                            }
                         </tbody>
                     </table>
                     <p style="font-size: 0.7rem; margin-top: 10px;">* Current session; Please note that sessions will remain active for up to 10 minutes after you revoke them.</p>
@@ -109,6 +114,7 @@
     private string accountName = "???";
     private string joined = "???";
     private readonly List<Token> tokens = new();
+    private string profileImage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,6 +124,9 @@
             navigationManager.NavigateTo("login?returnUrl=/account");
             return;
         }
+
+        // Load default profile image
+        profileImage = $"data:image/png;base64,{Convert.ToBase64String(await http.GetByteArrayAsync("img/profile.png"))}";
 
         await UpdateAccountOverview();
         await UpdateLinkedAccounts();
@@ -138,6 +147,7 @@
             {
                 accountName = response.Data.Name;
                 joined = response.Data.Joined.ToString("dd/MM/yyyy");
+                profileImage = $"data:image/png;base64,{Convert.ToBase64String(response.Data.ProfileImage)}";
                 StateHasChanged();
             }
         }
@@ -400,6 +410,64 @@
             {
                 alertService.Success(response.Message, true);
                 StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+
+    private async Task UploadProfileImage(InputFileChangeEventArgs e)
+    {
+        alertService.Clear();
+        try
+        {
+            var response = await openSky.UploadProfileImageAsync(new FileParameter(e.File.OpenReadStream(), e.File.Name, e.File.ContentType));
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success(response.Message, true);
+                StateHasChanged();
+                await UpdateAccountOverview();
             }
         }
         catch (ApiException ex)
