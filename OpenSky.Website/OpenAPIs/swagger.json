@@ -68,7 +68,7 @@
           }
         }
       },
-      "post": {
+      "put": {
         "tags": [
           "Account"
         ],
@@ -95,6 +95,49 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Account/tokenRenewalCountryVerification/{enableVerification}": {
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Sets the token renewal country verification.",
+        "description": "sushi.at, 30/11/2021.",
+        "operationId": "SetTokenRenewalCountryVerification",
+        "parameters": [
+          {
+            "name": "enableVerification",
+            "in": "path",
+            "description": "True to enable, false to disable the verification.",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -289,7 +332,7 @@
         }
       }
     },
-    "/Aircraft/purchase/{registry}/{forAirline}": {
+    "/Aircraft/purchase": {
       "post": {
         "tags": [
           "Aircraft"
@@ -297,26 +340,26 @@
         "summary": "Purchase specified aircraft.",
         "description": "sushi.at, 19/07/2021.",
         "operationId": "PurchaseAircraft",
-        "parameters": [
-          {
-            "name": "registry",
-            "in": "path",
-            "description": "The registry of the aircraft to purchase.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "forAirline",
-            "in": "path",
-            "description": "True to purchase the aircraft for the airline and not the player.",
-            "required": true,
-            "schema": {
-              "type": "boolean"
+        "requestBody": {
+          "description": "The purchase aircraft model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseAircraft"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseAircraft"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseAircraft"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -797,12 +840,44 @@
         }
       }
     },
+    "/AircraftType/upgrades": {
+      "get": {
+        "tags": [
+          "AircraftType"
+        ],
+        "summary": "Get available aircraft upgrades.",
+        "description": "sushi.at, 29/11/2021.",
+        "operationId": "GetAircraftTypeUpgrades",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeUpgradeIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeUpgradeIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeUpgradeIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/AircraftType/all": {
       "get": {
         "tags": [
           "AircraftType"
         ],
-        "summary": "Gets all aircraft types (including disabled and previous).",
+        "summary": "Gets all aircraft types (including disabled and previous versions).",
         "description": "sushi.at, 02/06/2021.",
         "operationId": "GetAllAircraftTypes",
         "responses": {
@@ -822,6 +897,145 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AircraftTypeIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/AircraftType/simulator/{simulator}": {
+      "get": {
+        "tags": [
+          "AircraftType"
+        ],
+        "summary": "Gets all aircraft types for the specified simulator (including disabled and previous).\r\nversions).",
+        "description": "sushi.at, 29/11/2021.",
+        "operationId": "GetSimulatorAircraftTypes",
+        "parameters": [
+          {
+            "name": "simulator",
+            "in": "path",
+            "description": "The simulator. 0 = MSFS, 1 = XPlane11",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Simulator"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/AircraftType/variants/{typeID}": {
+      "get": {
+        "tags": [
+          "AircraftType"
+        ],
+        "summary": "Gets the variants of this type (can be called with base or one of the variant sub-types)",
+        "description": "sushi.at, 23/11/2021.",
+        "operationId": "GetVariantsOfType",
+        "parameters": [
+          {
+            "name": "typeID",
+            "in": "path",
+            "description": "Identifier for the type.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AircraftTypeIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/AircraftType/upgrade": {
+      "post": {
+        "tags": [
+          "AircraftType"
+        ],
+        "summary": "Performs the specified aircraft type upgrade.",
+        "description": "sushi.at, 29/11/2021.",
+        "operationId": "UpgradeAircraftType",
+        "requestBody": {
+          "description": "The upgrade to perform (from/to type).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AircraftTypeUpgrade"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AircraftTypeUpgrade"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AircraftTypeUpgrade"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
                 }
               }
             }
@@ -2392,6 +2606,38 @@
         }
       }
     },
+    "/Flight/worldMap": {
+      "get": {
+        "tags": [
+          "Flight"
+        ],
+        "summary": "Get flights for the world map.",
+        "description": "sushi.at, 18/11/2021.",
+        "operationId": "GetWorldMapFlights",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldMapFlightIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldMapFlightIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldMapFlightIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Flight/pause/{flightID}": {
       "post": {
         "tags": [
@@ -2724,6 +2970,10 @@
             "description": "Gets or sets the profile image.",
             "format": "byte",
             "nullable": true
+          },
+          "tokenRenewalCountryVerification": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the token renewal country verification is enabled."
           }
         },
         "additionalProperties": false,
@@ -3016,6 +3266,11 @@
             "description": "Gets or sets the fuel weight per gallon (default values are 6 lbs/gallon avgas and 6.66 lbs/gallon jetfuel).",
             "format": "double"
           },
+          "hasVariants": {
+            "type": "boolean",
+            "description": "Gets a value indicating whether this aircraft type has variants.",
+            "readOnly": true
+          },
           "id": {
             "type": "string",
             "description": "Gets or sets the identifier.",
@@ -3094,6 +3349,14 @@
             "format": "uuid",
             "nullable": true
           },
+          "requiresManualFuelling": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the aircraft type requires manual fuelling."
+          },
+          "requiresManualLoading": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the aircraft type requires manual loading."
+          },
           "simulator": {
             "$ref": "#/components/schemas/Simulator"
           },
@@ -3108,6 +3371,14 @@
             "description": "Gets the name of the uploader.",
             "nullable": true,
             "readOnly": true
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AircraftType"
+            },
+            "description": "Gets or sets the variants of this aircraft.",
+            "nullable": true
           },
           "versionNumber": {
             "type": "integer",
@@ -3163,6 +3434,58 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AircraftType"
+            },
+            "description": "Gets or sets the embedded data of type T.",
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
+      "AircraftTypeUpgrade": {
+        "type": "object",
+        "properties": {
+          "aircraftCount": {
+            "type": "integer",
+            "description": "Gets or sets the number of aircraft affected by this upgrade.",
+            "format": "int32"
+          },
+          "from": {
+            "$ref": "#/components/schemas/AircraftType"
+          },
+          "to": {
+            "$ref": "#/components/schemas/AircraftType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Aircraft type upgrade model."
+      },
+      "AircraftTypeUpgradeIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AircraftTypeUpgrade"
             },
             "description": "Gets or sets the embedded data of type T.",
             "nullable": true
@@ -4943,6 +5266,9 @@
       "FlightLog": {
         "type": "object",
         "properties": {
+          "aircraftEngineType": {
+            "$ref": "#/components/schemas/EngineType"
+          },
           "aircraftRegistry": {
             "type": "string",
             "description": "Gets or sets the aircraft registry.",
@@ -5802,6 +6128,29 @@
           "Failed"
         ]
       },
+      "PurchaseAircraft": {
+        "required": [
+          "registry"
+        ],
+        "type": "object",
+        "properties": {
+          "forAirline": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether to purchase the aircraft for the airline or the user."
+          },
+          "registry": {
+            "type": "string",
+            "description": "Gets or sets the registry."
+          },
+          "variantID": {
+            "type": "string",
+            "description": "Gets or sets the identifier of the variant (can be Guid.Empty).",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Purchase aircraft model."
+      },
       "RefreshToken": {
         "type": "object",
         "properties": {
@@ -5994,16 +6343,19 @@
       },
       "Simulator": {
         "enum": [
-          0
+          0,
+          1
         ],
         "type": "integer",
-        "description": "Simulators. 0 = MSFS",
+        "description": "Simulators. 0 = MSFS, 1 = XPlane11",
         "format": "int32",
         "x-enumNames": [
-          "MSFS"
+          "MSFS",
+          "XPlane11"
         ],
         "x-enum-varnames": [
-          "MSFS"
+          "MSFS",
+          "XPlane11"
         ]
       },
       "StringApiResponse": {
@@ -6160,6 +6512,11 @@
             "description": "Gets or sets the rent price.",
             "format": "int32",
             "nullable": true
+          },
+          "variantID": {
+            "type": "string",
+            "description": "Gets or sets the identifier of the variant (can be set to Guid.Empty to leave unchanged).",
+            "format": "uuid"
           }
         },
         "additionalProperties": false,
@@ -6246,6 +6603,118 @@
         },
         "additionalProperties": false,
         "description": "Validate email model."
+      },
+      "WorldMapFlight": {
+        "type": "object",
+        "properties": {
+          "aircraftRegistry": {
+            "type": "string",
+            "description": "Gets or sets the aircraft registry.",
+            "nullable": true
+          },
+          "aircraftType": {
+            "type": "string",
+            "description": "Gets or sets the type of the aircraft.",
+            "nullable": true
+          },
+          "altitude": {
+            "type": "number",
+            "description": "Gets or sets the altitude in feet.",
+            "format": "double"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Gets or sets the Destination for the.",
+            "nullable": true
+          },
+          "flightPhase": {
+            "$ref": "#/components/schemas/FlightPhase"
+          },
+          "fullFlightNumber": {
+            "type": "string",
+            "description": "Gets or sets the full flight number.",
+            "nullable": true
+          },
+          "groundSpeed": {
+            "type": "number",
+            "description": "Gets or sets the ground speed in knots.",
+            "format": "double"
+          },
+          "heading": {
+            "type": "number",
+            "description": "The magnetic heading.",
+            "format": "double"
+          },
+          "isPaused": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this flight is paused."
+          },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude in degrees.",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude in degrees.",
+            "format": "double"
+          },
+          "onGround": {
+            "type": "boolean",
+            "description": "Is the plane on the ground?"
+          },
+          "operator": {
+            "type": "string",
+            "description": "Gets or sets the operator.",
+            "nullable": true
+          },
+          "origin": {
+            "type": "string",
+            "description": "Gets or sets the origin.",
+            "nullable": true
+          },
+          "pilot": {
+            "type": "string",
+            "description": "Gets or sets the pilot.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "World map flight."
+      },
+      "WorldMapFlightIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorldMapFlight"
+            },
+            "description": "Gets or sets the embedded data of type T.",
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
       },
       "WorldPopulationOverview": {
         "type": "object",
