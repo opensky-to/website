@@ -100,6 +100,13 @@
                         </tbody>
                     </table>
                     <p style="font-size: 0.7rem; margin-top: 10px;">* Current session; Please note that sessions will remain active for up to 10 minutes after you revoke them.</p>
+                    @*<EditForm Model="countryCheckEnabled" OnSubmit="CountryCheckChanged">*@
+                        <p style="font-size: 1.05em; float: left; margin-top: 20px; text-align: left;">
+                            @*<InputCheckbox bind-Value="countryCheckEnabled" id="countryCheckbox" ValueChanged="CountryCheckChanged" />*@
+                            <input type="checkbox" id="countryCheckbox" @onchange="CountryCheckChanged" checked="@countryCheckEnabled" />
+                            <label style="" for="countryCheckbox">Enable token renewal country change verification. Warning: Disabling this feature reduces the security of your OpenSky account. Only disable this feature if you frequently change your IP address country, by using a VPN for example AND you have been asked to login again repeatedly.</label>
+                        </p>
+                    @*</EditForm>*@
                 </div>
             </div>
         </div>
@@ -111,6 +118,7 @@
 @code {
     private readonly LinkedAccounts linkedAccounts = new();
     private bool savingAccounts;
+    private bool countryCheckEnabled = true;
     private string accountName = "???";
     private string joined = "???";
     private readonly List<Token> tokens = new();
@@ -133,6 +141,63 @@
         await UpdateTokens();
     }
 
+    private async Task CountryCheckChanged()
+    {
+        try
+        {
+            var response = await openSky.SetTokenRenewalCountryVerificationAsync(!countryCheckEnabled);
+            if (response.IsError)
+            {
+                alertService.Error(response.Message);
+                StateHasChanged();
+            }
+            else
+            {
+                alertService.Success("Setting updated.");
+                countryCheckEnabled = !countryCheckEnabled;
+                StateHasChanged();
+            }
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 401)
+            {
+                navigationManager.NavigateTo("login?returnUrl=/account");
+            }
+            else if (!string.IsNullOrEmpty(ex.Response))
+            {
+                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(ex.Response);
+                if (problemDetails != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        foreach (var errorMessage in problemDetailsError.Value)
+                        {
+                            alertService.Error(errorMessage, false, false);
+                        }
+                    }
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    alertService.Error(ex.Message, false, false);
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                alertService.Error(ex.Message, false, false);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            alertService.Error(ex.Message, false, false);
+            StateHasChanged();
+        }
+    }
+
     private async Task UpdateAccountOverview()
     {
         try
@@ -147,6 +212,7 @@
             {
                 accountName = response.Data.Name;
                 joined = response.Data.Joined.ToString("dd/MM/yyyy");
+                countryCheckEnabled = response.Data.TokenRenewalCountryVerification;
                 if (response.Data.ProfileImage?.Length > 0)
                 {
                     profileImage = $"data:image/png;base64,{Convert.ToBase64String(response.Data.ProfileImage)}";
