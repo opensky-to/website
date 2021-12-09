@@ -1,14 +1,25 @@
 ﻿@page "/"
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 
 <section id="home">
     <div class="home container">
         <div>
             <h1>OpenSKY, <span></span></h1>
             <h1>A brand new airline manager experience!<span></span></h1>
-            <h1>Alpha1 out now!<span></span></h1>
+            <h1>@bannerMessage<span></span></h1>
             <NavLink class="btn btn-primary" href="about">Read more</NavLink>
         </div>
     </div>
 </section>
 
 <PageFooter />
+
+@code {
+    private string bannerMessage = "Welcome!";
+
+    protected override void OnInitialized()
+    {
+        bannerMessage = configuration.GetValue<string>("OpenSky:IndexBannerMessage");
+    }
+}
