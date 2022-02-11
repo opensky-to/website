@@ -488,6 +488,49 @@
         }
       }
     },
+    "/Aircraft/sellToSystem/{registry}": {
+      "post": {
+        "tags": [
+          "Aircraft"
+        ],
+        "summary": "Sell aircraft back to system.",
+        "description": "sushi.at, 23/12/2021.",
+        "operationId": "SellAircraftToSystem",
+        "parameters": [
+          {
+            "name": "registry",
+            "in": "path",
+            "description": "The registry of the aircraft to sell.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Aircraft": {
       "put": {
         "tags": [
@@ -2113,6 +2156,38 @@
         }
       }
     },
+    "/DataImport": {
+      "get": {
+        "tags": [
+          "DataImport"
+        ],
+        "summary": "Get data imports.",
+        "description": "sushi.at, 02/07/2021.",
+        "operationId": "GetDataImports",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/DataImport/status/{importID}": {
       "get": {
         "tags": [
@@ -2150,38 +2225,6 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DataImportStatusApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/DataImport": {
-      "get": {
-        "tags": [
-          "DataImport"
-        ],
-        "summary": "Get data imports.",
-        "description": "sushi.at, 02/07/2021.",
-        "operationId": "GetDataImports",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataImportIEnumerableApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataImportIEnumerableApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataImportIEnumerableApiResponse"
                 }
               }
             }
@@ -2233,6 +2276,153 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GuidNullableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DataImport/littleNavmapXP11": {
+      "post": {
+        "tags": [
+          "DataImport"
+        ],
+        "summary": "Post LittleNavmap XPlane11 sqlite database for import.",
+        "description": "sushi.at, 04/05/2021.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fileUpload": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "fileUpload": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuidNullableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuidNullableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuidNullableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bobsYourUncle": {
+      "post": {
+        "tags": [
+          "Financial"
+        ],
+        "summary": "Free money :)",
+        "description": "sushi.at, 25/01/2022.",
+        "operationId": "BobsYourUncle",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances": {
+      "get": {
+        "tags": [
+          "Financial"
+        ],
+        "summary": "Get the current account balances.",
+        "description": "sushi.at, 25/01/2022.",
+        "operationId": "GetAccountBalances",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalancesApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalancesApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalancesApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/overview": {
+      "get": {
+        "tags": [
+          "Financial"
+        ],
+        "summary": "Get financial overview (with transactions of the last 30 days)",
+        "description": "sushi.at, 24/01/2022.",
+        "operationId": "GetFinancialOverview",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialOverviewApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialOverviewApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialOverviewApiResponse"
                 }
               }
             }
@@ -3023,6 +3213,67 @@
         }
       }
     },
+    "/Job/atAirportForSim/{icao}/{direction}/{simulator}": {
+      "get": {
+        "tags": [
+          "Job"
+        ],
+        "summary": "Gets the available jobs at the specified airport and simulator.",
+        "description": "sushi.at, 10/12/2021.",
+        "operationId": "GetJobsAtAirportForSimulator",
+        "parameters": [
+          {
+            "name": "icao",
+            "in": "path",
+            "description": "The ICAO code of the airport.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "path",
+            "description": "The direction of the jobs to return. 0 = From, 1 = To, 2 = RoundTrip",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/JobDirection"
+            }
+          },
+          {
+            "name": "simulator",
+            "in": "path",
+            "description": "The simulator (or NULL for all simulators). 0 = MSFS, 1 = XPlane11",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Simulator"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Job/atAirport/{icao}/{direction}": {
       "get": {
         "tags": [
@@ -3048,6 +3299,137 @@
             "required": true,
             "schema": {
               "$ref": "#/components/schemas/JobDirection"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Job/atAirportForCategoryAndSim/{icao}/{direction}/{category}/{simulator}": {
+      "get": {
+        "tags": [
+          "Job"
+        ],
+        "summary": "Gets the available jobs at the specified airport for the specified aircraft type category and simulator.",
+        "description": "sushi.at, 10/12/2021.",
+        "operationId": "GetJobsAtAirportForCategoryAndSimulator",
+        "parameters": [
+          {
+            "name": "icao",
+            "in": "path",
+            "description": "The ICAO code of the airport.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "path",
+            "description": "The direction of the jobs to return. 0 = From, 1 = To, 2 = RoundTrip",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/JobDirection"
+            }
+          },
+          {
+            "name": "category",
+            "in": "path",
+            "description": "The aircraft type category to return jobs for (recommended category). 0 = SEP, 1 = MEP, 2 = SET, 3 = MET, 4 = JET, 5 = REG, 6 = NBA, 7 = WBA, 8 = HEL",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/AircraftTypeCategory"
+            }
+          },
+          {
+            "name": "simulator",
+            "in": "path",
+            "description": "The simulator (or NULL for all simulators). 0 = MSFS, 1 = XPlane11",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Simulator"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobIEnumerableApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Job/atAirportForCategory/{icao}/{direction}/{category}": {
+      "get": {
+        "tags": [
+          "Job"
+        ],
+        "summary": "Gets the available jobs at the specified airport for the specified aircraft type category.",
+        "description": "sushi.at, 10/12/2021.",
+        "operationId": "GetJobsAtAirportForCategory",
+        "parameters": [
+          {
+            "name": "icao",
+            "in": "path",
+            "description": "The ICAO code of the airport.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "path",
+            "description": "The direction of the jobs to return. 0 = From, 1 = To, 2 = RoundTrip",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/JobDirection"
+            }
+          },
+          {
+            "name": "category",
+            "in": "path",
+            "description": "The aircraft type category to return jobs for (recommended category). 0 = SEP, 1 = MEP, 2 = SET, 3 = MET, 4 = JET, 5 = REG, 6 = NBA, 7 = WBA, 8 = HEL",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/AircraftTypeCategory"
             }
           }
         ],
@@ -3139,31 +3521,31 @@
         }
       }
     },
-    "/WorldPopulation": {
+    "/WorldStatistics": {
       "get": {
         "tags": [
-          "WorldPopulation"
+          "WorldStatistics"
         ],
-        "summary": "Get world population overview.",
+        "summary": "Get world statistics overview.",
         "description": "sushi.at, 02/07/2021.",
-        "operationId": "GetWorldPopulationOverview",
+        "operationId": "GetWorldStatisticsOverview",
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/WorldPopulationOverviewApiResponse"
+                  "$ref": "#/components/schemas/WorldStatisticsOverviewApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WorldPopulationOverviewApiResponse"
+                  "$ref": "#/components/schemas/WorldStatisticsOverviewApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WorldPopulationOverviewApiResponse"
+                  "$ref": "#/components/schemas/WorldStatisticsOverviewApiResponse"
                 }
               }
             }
@@ -3171,10 +3553,10 @@
         }
       }
     },
-    "/WorldPopulation/populateAircraft/{icao}": {
+    "/WorldStatistics/populateAircraft/{icao}": {
       "post": {
         "tags": [
-          "WorldPopulation"
+          "WorldStatistics"
         ],
         "summary": "Manually request to populate an airport and return info text results.",
         "description": "sushi.at, 05/07/2021.",
@@ -3217,9 +3599,61 @@
   },
   "components": {
     "schemas": {
+      "AccountBalances": {
+        "type": "object",
+        "properties": {
+          "accountBalance": {
+            "type": "integer",
+            "description": "Gets or sets the account balance (of the user).",
+            "format": "int64"
+          },
+          "airlineAccountBalance": {
+            "type": "integer",
+            "description": "Gets or sets the airline account balance (if user has the permission).",
+            "format": "int64",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Account balances model."
+      },
+      "AccountBalancesApiResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AccountBalances"
+          },
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
       "AccountOverview": {
         "type": "object",
         "properties": {
+          "airlineName": {
+            "type": "string",
+            "description": "Gets or sets the name of the airline (if the user is a member of one).",
+            "nullable": true
+          },
           "joined": {
             "type": "string",
             "description": "Gets or sets the Date/Time of when the user joined.",
@@ -3322,6 +3756,16 @@
             "format": "double",
             "readOnly": true
           },
+          "lifeTimeExpense": {
+            "type": "integer",
+            "description": "Gets or sets the life time expense (for the current owner only).",
+            "format": "int64"
+          },
+          "lifeTimeIncome": {
+            "type": "integer",
+            "description": "Gets or sets the life time income (for the current owner only).",
+            "format": "int64"
+          },
           "loadingUntil": {
             "type": "string",
             "description": "Gets or sets the Date/Time until the aircraft is loading payload (cargo or pax).",
@@ -3369,8 +3813,8 @@
             "nullable": true
           },
           "registry": {
-            "maxLength": 10,
-            "minLength": 5,
+            "maxLength": 12,
+            "minLength": 7,
             "type": "string",
             "description": "Gets or sets the aircraft registration."
           },
@@ -3625,6 +4069,11 @@
             "type": "number",
             "description": "Gets or sets the maximum gross weight in pounds.",
             "format": "double"
+          },
+          "maxPayloadDeltaAllowed": {
+            "type": "integer",
+            "description": "Gets or sets the maximum payload delta allowed during a flight (to compensate for consumables\r\nlike de-icing fluid).",
+            "format": "int32"
           },
           "maxPrice": {
             "type": "integer",
@@ -3885,12 +4334,13 @@
           41,
           42,
           43,
+          50,
           90,
           91,
           92
         ],
         "type": "integer",
-        "description": "Airline roles. 10 = BuyAircraft, 11 = SellAircraft, 12 = RentAircraft, 13 = RentOutAircraft, 14 = AssignAircraft, 15 = RenameAircraft, 20 = BuyFBO, 21 = SellFBO, 22 = RentFBO, 23 = RentOutFBO, 24 = RenameFBO, 25 = OrderFuel, 30 = AcceptJobs, 31 = Dispatch, 32 = OutsourceJobs, 33 = AbortJobs, 40 = ModifyAircraft, 41 = MaintainAircraft, 42 = ReplaceAircraftParts, 43 = PerformGroundOperations, 90 = ChangePermissions, 91 = BoardMember, 92 = AllPermissions",
+        "description": "Airline roles. 10 = BuyAircraft, 11 = SellAircraft, 12 = RentAircraft, 13 = RentOutAircraft, 14 = AssignAircraft, 15 = RenameAircraft, 20 = BuyFBO, 21 = SellFBO, 22 = RentFBO, 23 = RentOutFBO, 24 = RenameFBO, 25 = OrderFuel, 30 = AcceptJobs, 31 = Dispatch, 32 = OutsourceJobs, 33 = AbortJobs, 40 = ModifyAircraft, 41 = MaintainAircraft, 42 = ReplaceAircraftParts, 43 = PerformGroundOperations, 50 = FinancialRecords, 90 = ChangePermissions, 91 = BoardMember, 92 = AllPermissions",
         "format": "int32",
         "x-enumNames": [
           "BuyAircraft",
@@ -3913,6 +4363,7 @@
           "MaintainAircraft",
           "ReplaceAircraftParts",
           "PerformGroundOperations",
+          "FinancialRecords",
           "ChangePermissions",
           "BoardMember",
           "AllPermissions"
@@ -3938,6 +4389,7 @@
           "MaintainAircraft",
           "ReplaceAircraftParts",
           "PerformGroundOperations",
+          "FinancialRecords",
           "ChangePermissions",
           "BoardMember",
           "AllPermissions"
@@ -3996,6 +4448,11 @@
             "format": "int32",
             "nullable": true
           },
+          "avGasPrice": {
+            "type": "number",
+            "description": "Gets or sets the AV gas price in SkyBucks/Gallon.",
+            "format": "float"
+          },
           "city": {
             "maxLength": 50,
             "minLength": 0,
@@ -4017,7 +4474,10 @@
             "type": "boolean",
             "description": "Gets or sets a value indicating whether the airport has AV gas for refueling."
           },
-          "hasBeenPopulated": {
+          "hasBeenPopulatedMSFS": {
+            "$ref": "#/components/schemas/ProcessingStatus"
+          },
+          "hasBeenPopulatedXP11": {
             "$ref": "#/components/schemas/ProcessingStatus"
           },
           "hasJetFuel": {
@@ -4037,6 +4497,11 @@
           "isMilitary": {
             "type": "boolean",
             "description": "Gets or sets a value indicating whether the airport is a military one."
+          },
+          "jetFuelPrice": {
+            "type": "number",
+            "description": "Gets or sets the jet fuel price in SkyBucks/Gallon.",
+            "format": "float"
           },
           "latitude": {
             "type": "number",
@@ -4061,7 +4526,7 @@
           },
           "msfs": {
             "type": "boolean",
-            "description": "Gets or sets a value indicating whether the airport if available in MSFS 2020."
+            "description": "Gets or sets a value indicating whether the airport is available in MSFS 2020."
           },
           "name": {
             "maxLength": 50,
@@ -4089,37 +4554,37 @@
             "nullable": true
           },
           "s2Cell3": {
-            "type": "integer",
+            "type": "string",
             "description": "S2 geometry cell ID for level 3.",
             "format": "int64"
           },
           "s2Cell4": {
-            "type": "integer",
+            "type": "string",
             "description": "S2 geometry cell ID for level 4.",
             "format": "int64"
           },
           "s2Cell5": {
-            "type": "integer",
+            "type": "string",
             "description": "S2 geometry cell ID for level 5.",
             "format": "int64"
           },
           "s2Cell6": {
-            "type": "integer",
+            "type": "string",
             "description": "S2 geometry cell ID for level 6.",
             "format": "int64"
           },
           "s2Cell7": {
-            "type": "integer",
+            "type": "string",
             "description": "S2 geometry cell ID for level 7.",
             "format": "int64"
           },
           "s2Cell8": {
-            "type": "integer",
+            "type": "string",
             "description": "S2 geometry cell ID for level 8.",
             "format": "int64"
           },
           "s2Cell9": {
-            "type": "integer",
+            "type": "string",
             "description": "S2 geometry cell ID for level 9.",
             "format": "int64"
           },
@@ -4144,6 +4609,10 @@
             "description": "Gets or sets the unicom frequency (if available).",
             "format": "int32",
             "nullable": true
+          },
+          "xP11": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the airport is available in XPlane 11."
           }
         },
         "additionalProperties": false,
@@ -5297,6 +5766,182 @@
         "additionalProperties": false,
         "description": "Flight final report model."
       },
+      "FinancialCategory": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          -1
+        ],
+        "type": "integer",
+        "description": "Financial categories. 0 = None, 1 = Aircraft, 2 = Fuel, 3 = Maintenance, 4 = AirportFees, 5 = Salaries, 6 = Loan, 7 = Interest, 8 = Shares, 9 = Dividend, 10 = FBO, 11 = Cargo, 12 = Passengers, 13 = SpecialtyJobs, 14 = Fines, -1 = Flight",
+        "format": "int32",
+        "x-enumNames": [
+          "None",
+          "Aircraft",
+          "Fuel",
+          "Maintenance",
+          "AirportFees",
+          "Salaries",
+          "Loan",
+          "Interest",
+          "Shares",
+          "Dividend",
+          "FBO",
+          "Cargo",
+          "Passengers",
+          "SpecialtyJobs",
+          "Fines",
+          "Flight"
+        ],
+        "x-enum-varnames": [
+          "None",
+          "Aircraft",
+          "Fuel",
+          "Maintenance",
+          "AirportFees",
+          "Salaries",
+          "Loan",
+          "Interest",
+          "Shares",
+          "Dividend",
+          "FBO",
+          "Cargo",
+          "Passengers",
+          "SpecialtyJobs",
+          "Fines",
+          "Flight"
+        ]
+      },
+      "FinancialOverview": {
+        "type": "object",
+        "properties": {
+          "accountBalance": {
+            "type": "integer",
+            "description": "Gets or sets the account balance (of the user).",
+            "format": "int64"
+          },
+          "airlineAccountBalance": {
+            "type": "integer",
+            "description": "Gets or sets the airline account balance (if user has the permission).",
+            "format": "int64",
+            "nullable": true
+          },
+          "recentAirlineFinancialRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialRecord"
+            },
+            "description": "Gets or sets the recent airline financial records (if user has the permission).",
+            "nullable": true
+          },
+          "recentFinancialRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialRecord"
+            },
+            "description": "Gets or sets the recent financial records (of the user).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Financial overview model."
+      },
+      "FinancialOverviewApiResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/FinancialOverview"
+          },
+          "errorDetails": {
+            "type": "string",
+            "description": "Gets or sets the error details (NULL if no error).",
+            "nullable": true
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether this response is reporting an error."
+          },
+          "message": {
+            "type": "string",
+            "description": "Gets or sets the message.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Gets or sets the status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "API standard response model."
+      },
+      "FinancialRecord": {
+        "required": [
+          "category",
+          "description",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "aircraftRegistry": {
+            "maxLength": 10,
+            "minLength": 5,
+            "type": "string",
+            "description": "Gets or sets the aircraft registry (optional, if record relates to an aircraft).",
+            "nullable": true
+          },
+          "category": {
+            "$ref": "#/components/schemas/FinancialCategory"
+          },
+          "childRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialRecord"
+            },
+            "description": "Gets or sets the child records.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the record."
+          },
+          "expense": {
+            "type": "integer",
+            "description": "Gets or sets the expense amount in SkyBucks.",
+            "format": "int64"
+          },
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the identifier for the financial record.",
+            "format": "uuid"
+          },
+          "income": {
+            "type": "integer",
+            "description": "Gets or sets the income amount in SkyBucks.",
+            "format": "int64"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Gets or sets the timestamp of the record.",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Financial record model."
+      },
       "Flight": {
         "required": [
           "id"
@@ -5765,6 +6410,9 @@
             "type": "string",
             "description": "Gets or sets the route.",
             "nullable": true
+          },
+          "simulator": {
+            "$ref": "#/components/schemas/Simulator"
           },
           "started": {
             "type": "string",
@@ -6584,7 +7232,7 @@
           "value": {
             "type": "integer",
             "description": "Gets or sets the value.",
-            "format": "int32"
+            "format": "int64"
           }
         },
         "additionalProperties": false,
@@ -7561,7 +8209,7 @@
         "additionalProperties": false,
         "description": "API standard response model."
       },
-      "WorldPopulationOverview": {
+      "WorldStatisticsOverview": {
         "type": "object",
         "properties": {
           "aircraftCategories": {
@@ -7596,12 +8244,62 @@
             "description": "Gets or sets a pie chart series for approach types.",
             "nullable": true
           },
+          "completedFlights": {
+            "type": "integer",
+            "description": "Gets or sets the completed flights.",
+            "format": "int32"
+          },
+          "flightAircraftCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PieChartValue"
+            },
+            "description": "Gets or sets a pie chart series for flight aircraft categories.",
+            "nullable": true
+          },
+          "flightOperators": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PieChartValue"
+            },
+            "description": "Gets or sets a pie chart series for flight operators.",
+            "nullable": true
+          },
           "fuelAvailability": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PieChartValue"
             },
             "description": "Gets or sets a pie chart series for fuel availability at airports.",
+            "nullable": true
+          },
+          "jobAircraftCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PieChartValue"
+            },
+            "description": "Gets or sets a pie chart series for job categories.",
+            "nullable": true
+          },
+          "jobOperators": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PieChartValue"
+            },
+            "description": "Gets or sets a pie chart series for job operators.",
+            "nullable": true
+          },
+          "jobsGenerated": {
+            "type": "integer",
+            "description": "Gets or sets the jobs generated.",
+            "format": "int32"
+          },
+          "jobTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PieChartValue"
+            },
+            "description": "Gets or sets a pie chart series for job types.",
             "nullable": true
           },
           "runwayLights": {
@@ -7635,6 +8333,11 @@
             "description": "Gets or sets the total number of approaches.",
             "format": "int32"
           },
+          "totalJobs": {
+            "type": "integer",
+            "description": "Gets or sets the total number of jobs.",
+            "format": "int32"
+          },
           "totalRunways": {
             "type": "integer",
             "description": "Gets or sets the total number of runways.",
@@ -7642,13 +8345,13 @@
           }
         },
         "additionalProperties": false,
-        "description": "World population overview model."
+        "description": "World statistics overview model."
       },
-      "WorldPopulationOverviewApiResponse": {
+      "WorldStatisticsOverviewApiResponse": {
         "type": "object",
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/WorldPopulationOverview"
+            "$ref": "#/components/schemas/WorldStatisticsOverview"
           },
           "errorDetails": {
             "type": "string",
