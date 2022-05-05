@@ -1,7 +1,7 @@
 ﻿@page "/news"
 @using OpenSky.Website.Models
-@inject AlertService alertService
-@inject HttpClient http
+@inject AlertService AlertService
+@inject HttpClient Http
 
 <section id="news">
     <div class="news container">
@@ -34,10 +34,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        alertService.Clear();
+        AlertService.Clear();
         try
         {
-            var newsFromFile = await http.GetFromJsonAsync<NewsItem[]>("newssource/news.json");
+            var newsFromFile = await Http.GetFromJsonAsync<NewsItem[]>("newssource/news.json");
             if (newsFromFile != null)
             {
                 newsItems.AddRange(newsFromFile);
@@ -47,7 +47,7 @@
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
     }

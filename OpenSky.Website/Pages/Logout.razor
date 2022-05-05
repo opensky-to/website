@@ -1,25 +1,25 @@
 ﻿@page "/logout"
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
-@inject UserSessionService userSession
-@inject NavigationManager navigationManager
-@inject AlertService alertService
-@inject OpenSkyService openSky
+@inject UserSessionService UserSession
+@inject NavigationManager NavigationManager
+@inject AlertService AlertService
+@inject OpenSkyService OpenSky
 
 @code {
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            if (!string.IsNullOrEmpty(userSession.RefreshToken))
+            if (!string.IsNullOrEmpty(UserSession.RefreshToken))
             {
-                var refreshToken = userSession.RefreshToken;
-                await openSky.RevokeTokenAsync(new RevokeToken { Token = userSession.RefreshToken });
+                var refreshToken = UserSession.RefreshToken;
+                await OpenSky.RevokeTokenAsync(new RevokeToken { Token = UserSession.RefreshToken });
 
-                if (!string.IsNullOrEmpty(userSession.RefreshToken) && userSession.RefreshToken != refreshToken)
+                if (!string.IsNullOrEmpty(UserSession.RefreshToken) && UserSession.RefreshToken != refreshToken)
                 {
                     // Refresh token was just refreshed, revoke that one as well
-                    await openSky.RevokeTokenAsync(new RevokeToken { Token = userSession.RefreshToken });
+                    await OpenSky.RevokeTokenAsync(new RevokeToken { Token = UserSession.RefreshToken });
                 }
             }
         }
@@ -34,27 +34,27 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage);
+                            AlertService.Error(errorMessage);
                         }
                     }
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
         }
 
-        await userSession.Logout();
-        alertService.Success("Logged out successfully.", true);
-        navigationManager.NavigateTo("");
+        await UserSession.Logout();
+        AlertService.Success("Logged out successfully.", true);
+        NavigationManager.NavigateTo("");
     }
 }

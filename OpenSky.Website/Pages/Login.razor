@@ -2,11 +2,11 @@
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
 @using Microsoft.AspNetCore.WebUtilities
-@inject OpenSkyService openSky
-@inject NavigationManager navigationManager
-@inject AlertService alertService
-@inject UserSessionService userSession
-@inject IJSRuntime jsRuntime
+@inject OpenSkyService OpenSky
+@inject NavigationManager NavigationManager
+@inject AlertService AlertService
+@inject UserSessionService UserSession
+@inject IJSRuntime JsRuntime
 
 <section id="login">
     <div class="container">
@@ -61,42 +61,42 @@
 
     protected override void OnInitialized()
     {
-        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var returnUrlParameter))
         {
             returnUrl = returnUrlParameter.ToString();
             StateHasChanged();
         }
 
-        if (userSession.IsUserLoggedIn)
+        if (UserSession.IsUserLoggedIn)
         {
-            navigationManager.NavigateTo(this.returnUrl ?? "account");
+            NavigationManager.NavigateTo(this.returnUrl ?? "account");
         }
     }
 
     private async void OnValidSubmit()
     {
-        alertService.Clear();
+        AlertService.Clear();
         loading = true;
         try
         {
             // Before we post the model to the API add the reCAPTCHA token
-            var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "login");
+            var captchaToken = await JsRuntime.InvokeAsync<string>("runCaptcha", "login");
             model.RecaptchaToken = captchaToken;
 
-            var response = await openSky.LoginAsync(model);
+            var response = await OpenSky.LoginAsync(model);
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 model.Password = string.Empty;
                 loading = false;
                 StateHasChanged();
             }
             else
             {
-                await userSession.LoggedIn(response.Data);
-                alertService.Success(response.Message, true);
-                navigationManager.NavigateTo(this.returnUrl ?? "account", true);
+                await UserSession.LoggedIn(response.Data);
+                AlertService.Success(response.Message, true);
+                NavigationManager.NavigateTo(this.returnUrl ?? "account", true);
             }
         }
         catch (ApiException ex)
@@ -110,7 +110,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage);
+                            AlertService.Error(errorMessage);
                         }
                     }
 
@@ -120,7 +120,7 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     model.Password = string.Empty;
                     loading = false;
                     StateHasChanged();
@@ -128,7 +128,7 @@
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 model.Password = string.Empty;
                 loading = false;
                 StateHasChanged();
@@ -136,7 +136,7 @@
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             model.Password = string.Empty;
             loading = false;
             StateHasChanged();

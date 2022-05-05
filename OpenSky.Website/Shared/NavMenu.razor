@@ -1,5 +1,5 @@
-﻿@inject UserSessionService userSession
-@inject IJSRuntime jsRuntime
+﻿@inject UserSessionService UserSession
+@inject IJSRuntime JsRuntime
 
 <div id="header">
     <nav class="navbar navbar-expand-xl navbar-dark box-shadow">
@@ -35,7 +35,7 @@
                             FORUMS
                         </NavLink>
                     </li>
-                    @if (!userSession.IsUserLoggedIn)
+                    @if (!UserSession.IsUserLoggedIn)
                     {
                         <li class="nav-item">
                             <NavLink class="nav-link" href="login" data-after="LOGIN">
@@ -77,14 +77,14 @@
 
     protected override void OnInitialized()
     {
-        userSession.NotifyUserChanged += this.OnUserChanged;
+        UserSession.NotifyUserChanged += this.OnUserChanged;
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            jsRuntime.InvokeVoidAsync("configureNavBar");
+            JsRuntime.InvokeVoidAsync("configureNavBar");
         }
     }
 
