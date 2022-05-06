@@ -1,12 +1,10 @@
 ﻿@page "/register"
-@using Microsoft.Extensions.Configuration
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
-@inject OpenSkyService openSky
-@inject NavigationManager navigationManager
-@inject AlertService alertService
-@inject IJSRuntime jsRuntime
-@inject IConfiguration configuration
+@inject OpenSkyService OpenSky
+@inject NavigationManager NavigationManager
+@inject AlertService AlertService
+@inject IJSRuntime JsRuntime
 
 <section id="register">
     <div class="container">
@@ -52,26 +50,26 @@
 
     private async void OnValidSubmit()
     {
-        alertService.Clear();
+        AlertService.Clear();
         loading = true;
         try
         {
             // Before we post the model to the API add the reCAPTCHA token
-            var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "register");
+            var captchaToken = await JsRuntime.InvokeAsync<string>("runCaptcha", "register");
             model.RecaptchaToken = captchaToken;
 
-            var response = await openSky.RegisterAsync(model);
+            var response = await OpenSky.RegisterAsync(model);
             if (response.IsError)
             {
-                alertService.Error(response.Message, false, false);
+                AlertService.Error(response.Message, false, false);
                 model.Password = string.Empty;
                 loading = false;
                 StateHasChanged();
             }
             else
             {
-                alertService.Success(response.Message, true, false);
-                navigationManager.NavigateTo("login");
+                AlertService.Success(response.Message, true, false);
+                NavigationManager.NavigateTo("login");
             }
         }
         catch (ApiException ex)
@@ -85,7 +83,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -95,7 +93,7 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     model.Password = string.Empty;
                     loading = false;
                     StateHasChanged();
@@ -103,7 +101,7 @@
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 model.Password = string.Empty;
                 loading = false;
                 StateHasChanged();
@@ -111,7 +109,7 @@
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             model.Password = string.Empty;
             loading = false;
             StateHasChanged();

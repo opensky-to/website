@@ -1,8 +1,8 @@
 ﻿@page "/validateemail"
 @using Microsoft.AspNetCore.WebUtilities
-@inject OpenSkyService openSky
-@inject NavigationManager navigationManager
-@inject IJSRuntime jsRuntime
+@inject OpenSkyService OpenSky
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
 <section id="validateemail">
     <div class="container">
@@ -56,7 +56,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("email", out var email))
         {
             model.Email = email.ToString();
@@ -77,10 +77,10 @@
             await Task.Delay(1000);
 
             // Before we post the model to the API add the reCAPTCHA token
-            var captchaToken = await jsRuntime.InvokeAsync<string>("runCaptcha", "validateEmail");
+            var captchaToken = await JsRuntime.InvokeAsync<string>("runCaptcha", "validateEmail");
             model.RecaptchaToken = captchaToken;
 
-            var response = await openSky.ValidateEmailAsync(model);
+            var response = await OpenSky.ValidateEmailAsync(model);
             if (response.IsError)
             {
                 showInfo = true;
@@ -96,7 +96,7 @@
                 StateHasChanged();
 
                 await Task.Delay(10 * 1000);
-                navigationManager.NavigateTo("/login");
+                NavigationManager.NavigateTo("/login");
             }
         }
         catch (Exception ex)

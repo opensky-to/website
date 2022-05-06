@@ -1,8 +1,8 @@
 ﻿@using OpenSky.Website.Models
 @using OpenSky.Website.Services
 @implements IDisposable
-@inject AlertService alertService
-@inject NavigationManager navigationManager
+@inject AlertService AlertService
+@inject NavigationManager NavigationManager
 
 <div class="alerts">
     @foreach (var alert in alerts)
@@ -26,15 +26,15 @@
     protected override void OnInitialized()
     {
         // Subscribe to new alerts and location change events
-        alertService.OnAlert += OnAlert;
-        navigationManager.LocationChanged += OnLocationChange;
+        AlertService.OnAlert += OnAlert;
+        NavigationManager.LocationChanged += OnLocationChange;
     }
 
     public void Dispose()
     {
         // Unsubscribe from alerts and location change events
-        alertService.OnAlert -= OnAlert;
-        navigationManager.LocationChanged -= OnLocationChange;
+        AlertService.OnAlert -= OnAlert;
+        NavigationManager.LocationChanged -= OnLocationChange;
     }
 
     private async void OnAlert(Models.Alert alert)
@@ -73,7 +73,7 @@
 
     private void OnLocationChange(object sender, LocationChangedEventArgs e)
     {
-        alertService.Clear(Id);
+        AlertService.Clear(Id);
     }
 
     private async void RemoveAlert(Models.Alert alert)

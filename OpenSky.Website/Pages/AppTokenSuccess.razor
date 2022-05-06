@@ -1,8 +1,8 @@
 ﻿@page "/apptokensuccess/{AppToken}"
 @using System.Web
 @using System.Text
-@inject NavigationManager navigationManager
-@inject AlertService alertService
+@inject NavigationManager NavigationManager
+@inject AlertService AlertService
 
 <section id="apptokensuccess">
     <div class="container">
@@ -33,11 +33,11 @@
             var token = HttpUtility.HtmlDecode(this.AppToken);
             token = Encoding.UTF8.GetString(Convert.FromBase64String(token));
 
-            navigationManager.NavigateTo(token);
+            NavigationManager.NavigateTo(token);
         }
         catch
         {
-            alertService.Error("Error decoding application token.", false, false);
+            AlertService.Error("Error decoding application token.", false, false);
         }
     }
 }

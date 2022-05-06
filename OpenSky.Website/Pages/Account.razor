@@ -1,11 +1,11 @@
 ﻿@page "/account"
 @using Newtonsoft.Json
 @using OpenSky.Website.OpenAPIs
-@inject NavigationManager navigationManager
-@inject UserSessionService userSession
-@inject OpenSkyService openSky
-@inject AlertService alertService
-@inject HttpClient http
+@inject NavigationManager NavigationManager
+@inject UserSessionService UserSession
+@inject OpenSkyService OpenSky
+@inject AlertService AlertService
+@inject HttpClient Http
 
 <section id="account">
     <div class="account container">
@@ -88,7 +88,7 @@
                             @foreach (var token in tokens)
                             {
                                 <tr>
-                                    <td data-label="Name">@token.Name@(userSession.ExpirationMatchesCurrentRefreshToken(token) ? "*" : string.Empty)</td>
+                                    <td data-label="Name">@token.Name@(UserSession.ExpirationMatchesCurrentRefreshToken(token) ? "*" : string.Empty)</td>
                                     <td data-label="Expiry">@token.Expiry.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") utc</td>
                                     <td data-label="Last IP">@(!string.IsNullOrEmpty(token.TokenIP) ? token.TokenIP : "?")</td>
                                     <td data-label="Country">@(!string.IsNullOrEmpty(token.TokenGeo) ? token.TokenGeo : "?")</td>
@@ -126,15 +126,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await userSession.CheckExpiration();
-        if (!userSession.IsUserLoggedIn)
+        await UserSession.CheckExpiration();
+        if (!UserSession.IsUserLoggedIn)
         {
-            navigationManager.NavigateTo("login?returnUrl=/account");
+            NavigationManager.NavigateTo("login?returnUrl=/account");
             return;
         }
 
         // Load default profile image
-        profileImage = $"data:image/png;base64,{Convert.ToBase64String(await http.GetByteArrayAsync("img/profile.png"))}";
+        profileImage = $"data:image/png;base64,{Convert.ToBase64String(await Http.GetByteArrayAsync("img/profile.png"))}";
 
         await UpdateAccountOverview();
         await UpdateLinkedAccounts();
@@ -145,15 +145,15 @@
     {
         try
         {
-            var response = await openSky.SetTokenRenewalCountryVerificationAsync(!countryCheckEnabled);
+            var response = await OpenSky.SetTokenRenewalCountryVerificationAsync(!countryCheckEnabled);
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 StateHasChanged();
             }
             else
             {
-                alertService.Success("Setting updated.");
+                AlertService.Success("Setting updated.");
                 countryCheckEnabled = !countryCheckEnabled;
                 StateHasChanged();
             }
@@ -162,7 +162,7 @@
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo("login?returnUrl=/account");
+                NavigationManager.NavigateTo("login?returnUrl=/account");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -173,7 +173,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -181,19 +181,19 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     StateHasChanged();
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
     }
@@ -202,10 +202,10 @@
     {
         try
         {
-            var response = await openSky.GetAccountOverviewAsync();
+            var response = await OpenSky.GetAccountOverviewAsync();
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 StateHasChanged();
             }
             else
@@ -224,7 +224,7 @@
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo("login?returnUrl=/account");
+                NavigationManager.NavigateTo("login?returnUrl=/account");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -235,7 +235,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -243,19 +243,19 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     StateHasChanged();
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
     }
@@ -265,10 +265,10 @@
         try
         {
             savingAccounts = true;
-            var response = await openSky.GetLinkedAccountsAsync();
+            var response = await OpenSky.GetLinkedAccountsAsync();
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 linkedAccounts.SimbriefUsername = string.Empty;
                 linkedAccounts.BingMapsKey = string.Empty;
                 savingAccounts = false;
@@ -286,7 +286,7 @@
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo("login?returnUrl=/account");
+                NavigationManager.NavigateTo("login?returnUrl=/account");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -297,7 +297,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -308,7 +308,7 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     linkedAccounts.SimbriefUsername = string.Empty;
                     linkedAccounts.BingMapsKey = string.Empty;
                     savingAccounts = false;
@@ -317,7 +317,7 @@
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 linkedAccounts.SimbriefUsername = string.Empty;
                 linkedAccounts.BingMapsKey = string.Empty;
                 savingAccounts = false;
@@ -326,7 +326,7 @@
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             linkedAccounts.SimbriefUsername = string.Empty;
             linkedAccounts.BingMapsKey = string.Empty;
             savingAccounts = false;
@@ -339,10 +339,10 @@
         try
         {
             tokens.Clear();
-            var response = await openSky.GetTokensAsync();
+            var response = await OpenSky.GetTokensAsync();
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 StateHasChanged();
             }
             else
@@ -355,7 +355,7 @@
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo("login?returnUrl=/account");
+                NavigationManager.NavigateTo("login?returnUrl=/account");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -366,7 +366,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -374,44 +374,44 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     StateHasChanged();
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
     }
 
     private void ChangePassword()
     {
-        navigationManager.NavigateTo("changepassword");
+        NavigationManager.NavigateTo("changepassword");
     }
 
     private async void OnValidLinkedAccountsSubmit()
     {
-        alertService.Clear();
+        AlertService.Clear();
         savingAccounts = true;
         try
         {
-            var response = await openSky.UpdateLinkedAccountsAsync(linkedAccounts);
+            var response = await OpenSky.UpdateLinkedAccountsAsync(linkedAccounts);
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 savingAccounts = false;
                 StateHasChanged();
             }
             else
             {
-                alertService.Success(response.Message, true);
+                AlertService.Success(response.Message, true);
                 savingAccounts = false;
                 StateHasChanged();
             }
@@ -420,7 +420,7 @@
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+                NavigationManager.NavigateTo("login?returnUrl=/changepassword");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -431,7 +431,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -440,21 +440,21 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     savingAccounts = false;
                     StateHasChanged();
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 savingAccounts = false;
                 StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             savingAccounts = false;
             StateHasChanged();
         }
@@ -462,22 +462,22 @@
 
     private async Task RevokeToken(Token token)
     {
-        alertService.Clear();
+        AlertService.Clear();
         try
         {
-            var response = await openSky.RevokeTokenByNameAsync(new RevokeTokenByName
+            var response = await OpenSky.RevokeTokenByNameAsync(new RevokeTokenByName
             {
                 Name = token.Name,
                 Expiry = token.Expiry
             });
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 StateHasChanged();
             }
             else
             {
-                alertService.Success(response.Message, true);
+                AlertService.Success(response.Message, true);
                 StateHasChanged();
             }
         }
@@ -485,7 +485,7 @@
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+                NavigationManager.NavigateTo("login?returnUrl=/changepassword");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -496,7 +496,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -504,37 +504,37 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     StateHasChanged();
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
     }
 
     private async Task UploadProfileImage(InputFileChangeEventArgs e)
     {
-        alertService.Clear();
+        AlertService.Clear();
         try
         {
-            var response = await openSky.UploadProfileImageAsync(new FileParameter(e.File.OpenReadStream(), e.File.Name, e.File.ContentType));
+            var response = await OpenSky.UploadProfileImageAsync(new FileParameter(e.File.OpenReadStream(), e.File.Name, e.File.ContentType));
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
                 StateHasChanged();
             }
             else
             {
-                alertService.Success(response.Message, true);
+                AlertService.Success(response.Message, true);
                 StateHasChanged();
                 await UpdateAccountOverview();
             }
@@ -543,7 +543,7 @@
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo("login?returnUrl=/changepassword");
+                NavigationManager.NavigateTo("login?returnUrl=/changepassword");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -554,7 +554,7 @@
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
 
@@ -562,19 +562,19 @@
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                     StateHasChanged();
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
                 StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
             StateHasChanged();
         }
     }

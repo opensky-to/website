@@ -4,11 +4,11 @@
 @using OpenSky.Website.OpenAPIs
 @using System.Web
 @using System.Text
-@inject IConfiguration configuration
-@inject AlertService alertService
-@inject NavigationManager navigationManager
-@inject OpenSkyService openSky
-@inject UserSessionService userSession
+@inject IConfiguration Configuration
+@inject AlertService AlertService
+@inject NavigationManager NavigationManager
+@inject OpenSkyService OpenSky
+@inject UserSessionService UserSession
 
 @if (appFound)
 {
@@ -64,7 +64,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        var tokenAppsSection = configuration.GetSection("OpenSky:TokenApps");
+        var tokenAppsSection = Configuration.GetSection("OpenSky:TokenApps");
         foreach (var section in tokenAppsSection.GetChildren())
         {
             var id = section.GetValue<Guid>("ID");
@@ -81,14 +81,14 @@ else
 
         if (!appFound)
         {
-            alertService.Error("Unknown application configuration, aborting.", false, false);
+            AlertService.Error("Unknown application configuration, aborting.", false, false);
         }
         else
         {
-            await userSession.CheckExpiration();
-            if (!userSession.IsUserLoggedIn)
+            await UserSession.CheckExpiration();
+            if (!UserSession.IsUserLoggedIn)
             {
-                navigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
+                NavigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
             }
         }
 
@@ -97,7 +97,7 @@ else
 
     private void DenyAccess()
     {
-        navigationManager.NavigateTo("");
+        NavigationManager.NavigateTo("");
     }
 
     private async Task GrantAccess()
@@ -105,22 +105,22 @@ else
         loading = true;
         try
         {
-            var response = await openSky.ApplicationTokenAsync(new ApplicationToken { Name = this.tokenName });
+            var response = await OpenSky.ApplicationTokenAsync(new ApplicationToken { Name = this.tokenName });
             if (response.IsError)
             {
-                alertService.Error(response.Message);
+                AlertService.Error(response.Message);
             }
             else
             {
                 var appTokenUri = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{this.uriScheme}://token={response.Data.Token}&tokenExpiration={response.Data.Expiration.UtcDateTime.ToFileTimeUtc()}&refresh={response.Data.RefreshToken}&refreshExpiration={response.Data.RefreshTokenExpiration.UtcDateTime.ToFileTimeUtc()}&user={HttpUtility.HtmlEncode(response.Data.Username)}"));
-                navigationManager.NavigateTo($"apptokensuccess/{HttpUtility.HtmlEncode(appTokenUri)}");
+                NavigationManager.NavigateTo($"apptokensuccess/{HttpUtility.HtmlEncode(appTokenUri)}");
             }
         }
         catch (ApiException ex)
         {
             if (ex.StatusCode == 401)
             {
-                navigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
+                NavigationManager.NavigateTo($"login?returnUrl=/apptoken/{AppID}");
             }
             else if (!string.IsNullOrEmpty(ex.Response))
             {
@@ -131,23 +131,23 @@ else
                     {
                         foreach (var errorMessage in problemDetailsError.Value)
                         {
-                            alertService.Error(errorMessage, false, false);
+                            AlertService.Error(errorMessage, false, false);
                         }
                     }
                 }
                 else
                 {
-                    alertService.Error(ex.Message, false, false);
+                    AlertService.Error(ex.Message, false, false);
                 }
             }
             else
             {
-                alertService.Error(ex.Message, false, false);
+                AlertService.Error(ex.Message, false, false);
             }
         }
         catch (Exception ex)
         {
-            alertService.Error(ex.Message, false, false);
+            AlertService.Error(ex.Message, false, false);
         }
         finally
         {
