@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-bullseye-slim AS build
 WORKDIR /src
 COPY /OpenSky.Website/OpenSky.Website.csproj .
 RUN dotnet restore "OpenSky.Website.csproj"
