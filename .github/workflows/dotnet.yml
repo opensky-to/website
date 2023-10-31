@@ -1,4 +1,4 @@
-name: .net7 build test
+name: .net7
 
 on: [push, pull_request]
 
