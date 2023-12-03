@@ -13,7 +13,7 @@
             <div class="card-whitebg">
                 <h4 class="card-header">My OPEN<span style="color: #08c6a4;">SKY</span> Account</h4>
                 <div class="card-body" style="text-align: center;">
-                    <img src="@profileImage" style="width: 200px; height: 200px; border-radius: 50%;" alt="profile image" />
+                    <img src="@profileImage" style="width: 250px; height: 250px; border-radius: 50%;" alt="profile image" />
                     <p style="margin-top: 20px; font-size: 1.3rem;">
                         Account Name: @accountName<br />
                         Joined: @joined
@@ -57,6 +57,15 @@
                             <p class="formLabel">simBrief User Name:</p>
                             <InputText @bind-Value="linkedAccounts.SimbriefUsername" class="form-control" placeHolder="simBrief User Name" />
                             <ValidationMessage For="@(() => linkedAccounts.SimbriefUsername)" />
+                        </div>
+                        
+                        <p style="text-align: left;">
+                            If you want to fly on Vatsim, please provide your numerical user ID here You can find it on your <a href="https://my.vatsim.net/profile" target="_blank">Vatsim profile page</a>.
+                        </p>
+                        <div class="form-group">
+                            <p class="formLabel">Vatsim ID:</p>
+                            <InputText @bind-Value="linkedAccounts.VatsimID" class="form-control" placeHolder="Vatsim ID" />
+                            <ValidationMessage For="@(() => linkedAccounts.VatsimID)" />
                         </div>
 
                         <p class="formLabel">&nbsp;</p>
@@ -271,6 +280,7 @@
                 AlertService.Error(response.Message);
                 linkedAccounts.SimbriefUsername = string.Empty;
                 linkedAccounts.BingMapsKey = string.Empty;
+                linkedAccounts.VatsimID = string.Empty;
                 savingAccounts = false;
                 StateHasChanged();
             }
@@ -278,6 +288,7 @@
             {
                 linkedAccounts.SimbriefUsername = response.Data.SimbriefUsername;
                 linkedAccounts.BingMapsKey = response.Data.BingMapsKey;
+                linkedAccounts.VatsimID = response.Data.VatsimID;
                 savingAccounts = false;
                 StateHasChanged();
             }
@@ -303,6 +314,7 @@
 
                     linkedAccounts.SimbriefUsername = string.Empty;
                     linkedAccounts.BingMapsKey = string.Empty;
+                    linkedAccounts.VatsimID = string.Empty;
                     savingAccounts = false;
                     StateHasChanged();
                 }
@@ -311,6 +323,7 @@
                     AlertService.Error(ex.Message, false, false);
                     linkedAccounts.SimbriefUsername = string.Empty;
                     linkedAccounts.BingMapsKey = string.Empty;
+                    linkedAccounts.VatsimID = string.Empty;
                     savingAccounts = false;
                     StateHasChanged();
                 }
@@ -320,6 +333,7 @@
                 AlertService.Error(ex.Message, false, false);
                 linkedAccounts.SimbriefUsername = string.Empty;
                 linkedAccounts.BingMapsKey = string.Empty;
+                linkedAccounts.VatsimID = string.Empty;
                 savingAccounts = false;
                 StateHasChanged();
             }
@@ -329,6 +343,7 @@
             AlertService.Error(ex.Message, false, false);
             linkedAccounts.SimbriefUsername = string.Empty;
             linkedAccounts.BingMapsKey = string.Empty;
+            linkedAccounts.VatsimID = string.Empty;
             savingAccounts = false;
             StateHasChanged();
         }
