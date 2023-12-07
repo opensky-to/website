@@ -7156,6 +7156,11 @@
             "description": "Gets or sets the alternate route.",
             "nullable": true
           },
+          "atcCallsign": {
+            "type": "string",
+            "description": "Gets or sets the atc callsign.",
+            "nullable": true
+          },
           "completed": {
             "type": "string",
             "description": "Gets or sets the Date/Time of when the flight was completed.",
@@ -7228,6 +7233,14 @@
             "type": "number",
             "description": "Gets or sets the on block fuel.",
             "format": "double"
+          },
+          "onlineNetwork": {
+            "$ref": "#/components/schemas/OnlineNetwork"
+          },
+          "onlineNetworkConnectedSeconds": {
+            "type": "integer",
+            "description": "Gets or sets the online network connected seconds.",
+            "format": "int32"
           },
           "operator": {
             "type": "string",
