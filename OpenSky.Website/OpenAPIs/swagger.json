@@ -4629,6 +4629,8 @@
             "$ref": "#/components/schemas/AircraftTypeCategory"
           },
           "comments": {
+            "maxLength": 200,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the comments (moderation status, retired, needs fixing, etc.).",
             "nullable": true
@@ -4702,6 +4704,13 @@
             "type": "boolean",
             "description": "Gets a value indicating whether this aircraft type has variants.",
             "readOnly": true
+          },
+          "icaoTypeDesignator": {
+            "maxLength": 4,
+            "minLength": 0,
+            "type": "string",
+            "description": "Gets or sets the ICAO type designator.",
+            "nullable": true
           },
           "id": {
             "type": "string",
@@ -5373,7 +5382,8 @@
             "description": "Gets or sets the package contents (g-zipped, base64 encoded)."
           },
           "packageHash": {
-            "minLength": 1,
+            "maxLength": 100,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the package hash (SHA-256, base64 encoded)"
           }
@@ -6338,6 +6348,8 @@
             "format": "uuid"
           },
           "importDataSource": {
+            "maxLength": 50,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets information describing the import data source (filename, url, etc.).",
             "nullable": true
@@ -6735,7 +6747,8 @@
             "nullable": true
           },
           "description": {
-            "minLength": 1,
+            "maxLength": 250,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the description of the record."
           },
@@ -6782,6 +6795,8 @@
             "$ref": "#/components/schemas/Airport"
           },
           "alternateRoute": {
+            "maxLength": 2048,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the alternate route.",
             "nullable": true
@@ -6793,6 +6808,8 @@
             "nullable": true
           },
           "atcCallsign": {
+            "maxLength": 8,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the atc call sign for the flight - important for online flying.",
             "nullable": true
@@ -6812,6 +6829,8 @@
             "readOnly": true
           },
           "dispatcherRemarks": {
+            "maxLength": 200,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the dispatcher remarks.",
             "nullable": true
@@ -6981,6 +7000,11 @@
           },
           "onlineNetwork": {
             "$ref": "#/components/schemas/OnlineNetwork"
+          },
+          "onlineNetworkConnectedSeconds": {
+            "type": "integer",
+            "description": "Gets or sets the seconds the player was connected to the online network for, used to\r\ncalculate 80% online requirement.",
+            "format": "int32"
           },
           "operatorName": {
             "type": "string",
@@ -7351,7 +7375,8 @@
             "format": "uuid"
           },
           "ident": {
-            "minLength": 1,
+            "maxLength": 15,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the ident of the fix."
           },
@@ -7366,7 +7391,8 @@
             "format": "double"
           },
           "type": {
-            "minLength": 1,
+            "maxLength": 10,
+            "minLength": 0,
             "type": "string",
             "description": "Gets or sets the type of the fix."
           }
@@ -8273,6 +8299,11 @@
             "type": "number",
             "description": "The bank angle in degrees.",
             "format": "double"
+          },
+          "connectedToOnlineNetworkSeconds": {
+            "type": "integer",
+            "description": "Gets or sets the number of seconds the user was connected to an online network (in seconds).",
+            "format": "int32"
           },
           "flightPhase": {
             "$ref": "#/components/schemas/FlightPhase"
