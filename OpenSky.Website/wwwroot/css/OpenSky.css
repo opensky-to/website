@@ -589,6 +589,112 @@ p {
     }
 /* End About Section */
 
+/* Credits Section */
+
+#credits {
+    background: #fff;
+}
+
+    #credits .credits {
+        flex-direction: column;
+        text-align: center;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 100px 0;
+    }
+
+    #credits .section-title span {
+        color: #08c6a4;
+    }
+
+    #credits .credits-top h1 {
+        font-size: 3.5rem;
+    }
+
+    #credits .credits-top p {
+        margin-left: 30px;
+        margin-right: 30px;
+    }
+
+    #credits .credits-bottom {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 50px;
+    }
+
+    #credits .credits-item {
+        flex-basis: 48%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        padding: 30px;
+        border-radius: 10px;
+        background-size: cover;
+        margin: 10px 1%;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+        #credits .credits-item::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+            opacity: 0.9;
+            z-index: -1;
+        }
+
+    #credits .credits-bottom .icon {
+        height: 200px;
+        width: 100%;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+
+        #credits .credits-bottom .icon img {
+            height: 200px;
+            width: auto;
+        }
+
+
+    #credits .credits-item h2 {
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        width: 100%;
+    }
+
+    #credits .credits-item p {
+        color: white;
+        text-align: left;
+    }
+
+    #credits table {
+        width: auto;
+        vertical-align: bottom;
+    }
+
+    #credits tr {
+        padding: 0;
+    }
+
+    #credits td {
+        color: white;
+        text-align: left;
+        width: auto;
+        padding: 0;
+        font-size: 1.4rem;
+    }
+
+/* End Credits Section */
+
 /* News Section */
 
 #news {
