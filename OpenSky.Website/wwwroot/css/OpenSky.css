@@ -1024,6 +1024,16 @@ p {
         margin-right: 10px;
     }
 
+     #credit .credit-bottom .credit-item {
+        flex-basis: 22%;
+        margin: 1.5%;
+    }
+
+    #credit .credit-top p {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
     #contribute .contribute-top p {
         margin-left: 10px;
         margin-right: 10px;
