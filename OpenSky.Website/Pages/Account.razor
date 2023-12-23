@@ -40,16 +40,6 @@
                         <DataAnnotationsValidator />
 
                         <p style="text-align: left;">
-                            A Bing Maps key is required to correctly display the maps in the various clients, if you don't already have one please visit the
-                            <a href="https://www.bingmapsportal.com/Application" target="_blank">Bing Maps Dev Center</a> and create one.
-                        </p>
-                        <div class="form-group">
-                            <p class="formLabel">Bing Maps Key:</p>
-                            <InputText @bind-Value="linkedAccounts.BingMapsKey" class="form-control" placeHolder="Bing Maps Key" />
-                            <ValidationMessage For="@(() => linkedAccounts.BingMapsKey)" />
-                        </div>
-
-                        <p style="text-align: left;">
                             You can import your simBrief flight plans into your flight plans and tracking sessions, to enable this feature please enter your account alias as shown on the
                             <a href="https://www.simbrief.com/system/profile.php#settings" target="_blank">simBrief Account Settings</a> page.
                         </p>
@@ -279,7 +269,6 @@
             {
                 AlertService.Error(response.Message);
                 linkedAccounts.SimbriefUsername = string.Empty;
-                linkedAccounts.BingMapsKey = string.Empty;
                 linkedAccounts.VatsimID = string.Empty;
                 savingAccounts = false;
                 StateHasChanged();
@@ -287,7 +276,6 @@
             else
             {
                 linkedAccounts.SimbriefUsername = response.Data.SimbriefUsername;
-                linkedAccounts.BingMapsKey = response.Data.BingMapsKey;
                 linkedAccounts.VatsimID = response.Data.VatsimID;
                 savingAccounts = false;
                 StateHasChanged();
@@ -313,7 +301,6 @@
                     }
 
                     linkedAccounts.SimbriefUsername = string.Empty;
-                    linkedAccounts.BingMapsKey = string.Empty;
                     linkedAccounts.VatsimID = string.Empty;
                     savingAccounts = false;
                     StateHasChanged();
@@ -322,7 +309,6 @@
                 {
                     AlertService.Error(ex.Message, false, false);
                     linkedAccounts.SimbriefUsername = string.Empty;
-                    linkedAccounts.BingMapsKey = string.Empty;
                     linkedAccounts.VatsimID = string.Empty;
                     savingAccounts = false;
                     StateHasChanged();
@@ -332,7 +318,6 @@
             {
                 AlertService.Error(ex.Message, false, false);
                 linkedAccounts.SimbriefUsername = string.Empty;
-                linkedAccounts.BingMapsKey = string.Empty;
                 linkedAccounts.VatsimID = string.Empty;
                 savingAccounts = false;
                 StateHasChanged();
@@ -342,7 +327,6 @@
         {
             AlertService.Error(ex.Message, false, false);
             linkedAccounts.SimbriefUsername = string.Empty;
-            linkedAccounts.BingMapsKey = string.Empty;
             linkedAccounts.VatsimID = string.Empty;
             savingAccounts = false;
             StateHasChanged();
